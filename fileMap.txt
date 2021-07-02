@@ -1,0 +1,28 @@
+readDirectory
+->
+
+splitName
+
+fileNames
+-> splitName 
+
+getFile
+-> 
+
+readFiles
+-> getFile
+
+splitText
+->
+
+splitDocuments
+-> splitText
+
+displayList
+-> checkColor
+
+checkColor
+->
+
+checkErrors
+-> splitName, getFile, splitText
