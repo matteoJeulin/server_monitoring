@@ -1,12 +1,12 @@
 
-const {checkColor} = require('./checkColor');
-const { getDate } = require('./getDate');
-const { getFolders } = require('./getFolders');
-const { getValue } = require('./getValue');
+const {checkColor} = require('../check/checkColor');
+const { getDate } = require('../get/getDate');
+const { getFolders } = require('../get/getFolders');
+const { getValue } = require('../get/getValue');
 
-const object = getFolders('C:/Users/matte/OneDrive/Documents/__job/server_monitoring/src/serverStatus',{})
+// const object = getFolders('C:/Users/matte/OneDrive/Documents/__job/server_monitoring/src/serverStatus',{})
 
-const color = ['#0000FF', '#00FF00', '#FF0000'];
+const color = ['#0000FF', '#00FF00', '#FF0000', '#000000'];
 
 function displayHome(object) {
     let output = [];
@@ -21,7 +21,7 @@ function displayHome(object) {
             output.push(`
             <li>
                 <a href="?file=${filePath}">
-                    <span style="color:${color[checkColor(object[keys][i].max,object[keys][i].min, value)]}">
+                    <span style="color:${color[checkColor(object[keys][i].max,object[keys][i].min, value, object[keys][i].refreshRate, date)]}">
                         ${object[keys][i].name} : ${date} . . . <b>${value}</b>.
                     </span>
                 </a>

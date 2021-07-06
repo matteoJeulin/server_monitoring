@@ -1,6 +1,6 @@
 
 const { getFile } = require("./getFile");
-const { splitText } = require("./splitText");
+const { splitText } = require("../modify/splitText");
 
 function getDate(path) {
     let text = getFile(path);

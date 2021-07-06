@@ -2,12 +2,13 @@
 const {splitText} = require('./splitText');
 
 function splitDocuments(txt) {
+    let output = [];
 
     for (let i = 0; i < txt.length; i++) {
-        txt[i] = splitText(txt[i])
+        output.push(splitText(txt[i]));
     }
 
-    return txt;
+    return output;
 }
 
 module.exports = {splitDocuments};

@@ -1,80 +1,79 @@
 
-const {readDirectory} = require('./src/readDirectory');
-const {readFiles} = require('./src/readFiles');
 
-const {fileNames} = require('./src/fileNames');
+const {fileNames} = require('./src/modify/fileNames');
+const { splitText } = require('./src/modify/splitText');
+const { shortenPath } = require('./src/modify/shortenPath');
+const {splitDocuments} = require('./src/modify/splitDocuments');
 
-const {splitDocuments} = require('./src/splitDocuments');
-const {displayHome} = require('./src/displayHome');
-const {displayList} = require('./src/displayList');
+const {displayHome} = require('./src/display/displayHome');
+const {displayList} = require('./src/display/displayList');
+const { displayBoxes } = require('./src/display/displayBoxes');
+const {pageTemplate} = require('./src/display/pageTemplate');
 
-const {checkErrors} = require('./src/checkErrors');
+const {checkErrors} = require('./src/check/checkErrors');
 
-const {getFolders} = require('./src/getFolders');
+const {getFolders} = require('./src/get/getFolders');
+const { getFile } = require('./src/get/getFile');
+const {readDirectory} = require('./src/get/readDirectory');
+const {readFiles} = require('./src/get/readFiles');
+
 
 const http = require('http');
-const { getFile } = require('./src/getFile');
-const { splitText } = require('./src/splitText');
-
-const path = 'C:/Users/matte/OneDrive/Documents/__job/server_monitoring/src/serverStatus';
-
-const folders = getFolders(path, {});
 
 
-// const directories = readDirectory(path);
+// const allPaths = [];
 
-// const files = [];
-// for (let i = 0; i < paths.length; i++) {
-    //     files.push(readDirectory(paths[i]));
-    // }
-    
-    // const splNames = fileNames([...files]);
-    
-    // const text = readFiles([...files], path);
-    
-    // const modText = splitDocuments([...text]);
-    
-    // const list = displayList([...modText],[...splNames]);
-    
-    
-    // for (let i = 0; i < files.length; i++) {
-        //     try {
-            //         checkErrors(files[i]);
-            //     }
-            //     catch (e) {
-                //         console.log(e.message);
-                //     }
-                // }
-                
-                
-const style = displayHome(folders);
-                
+// for(keys in folders) {
+//     for(let i = 0; i < folders[keys].length; i++) {
+//         allPaths.push(folders[keys][i].path);
+//     }
+// } 
+// const defPath = 'C:/Users/matte/OneDrive/Documents/__job/server_monitoring/src/serverStatus';
+const defPath = './src/serverStatus';
+
+
 const server = http.createServer((req,res) => {
-    res.writeHead(200, {'Content-Type': 'text/html'});
-    let myURL = req.url;
-    let parameters = myURL.split('?');
-    if (parameters.length > 1) {
-        let files = parameters[1].split('&');
+    
+    const folders = getFolders(defPath, {});
+    
+    try {    
+        res.writeHead(200, {'Content-Type': 'text/html'});
+        let myURL = req.url;
 
-        for (let i = 0; i < files.length; i++) {
-            files[i] = files[i].split('=')
+        if (myURL === '/detail') {
+            const detail = displayHome(folders);
+            res.end(pageTemplate('Detailed',detail));
+            return;
+        }
 
-            for (let j = 0; j < files[i].length; j++) {
+        let parameters = myURL.split('?');
+        if (parameters.length > 1) {
+            let files = parameters[1].split('&');
 
-                if (files[i][j] === 'file' && displayList(files[i][j+1])) {
-                    let display = displayList(files[i][j+1]); 
-                    display = display.join('');
+            for (let i = 0; i < files.length; i++) {
+                files[i] = files[i].split('=')
 
-                    res.end(`${display}`);
+                for (let j = 0; j < files[i].length; j++) {
 
-                    return;
+                    if (files[i][j] === 'file' && displayList(files[i][j+1])) {
+                        let display = displayList(files[i][j+1]); 
+                        let joinedDisplay = display.join('');
+                        let shortPath = shortenPath(files[i][j+1]);
+
+                        res.end(pageTemplate(shortPath,`<h1>${shortPath}</h1>${joinedDisplay}`));
+
+                        return;
+                    }
                 }
             }
         }
+
+        const boxes = displayBoxes(folders);
+        res.end(pageTemplate('Home',boxes));
     }
-    res.end(`${style}`);
-
-
+    catch (e) {
+        res.end(e);
+    }
 });
         
-server.listen(3000, '127.0.0.1');
+server.listen(3000, '0.0.0.0');
