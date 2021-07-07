@@ -9,6 +9,7 @@ const {displayHome} = require('./src/display/displayHome');
 const {displayList} = require('./src/display/displayList');
 const { displayBoxes } = require('./src/display/displayBoxes');
 const {pageTemplate} = require('./src/display/pageTemplate');
+const { graphTemplate } = require('./src/display/graphTemplate');
 
 const {checkErrors} = require('./src/check/checkErrors');
 
@@ -19,6 +20,8 @@ const {readFiles} = require('./src/get/readFiles');
 
 
 const http = require('http');
+const fs = require('fs');
+const { getData } = require('./src/get/getData');
 
 
 // const allPaths = [];
@@ -37,42 +40,64 @@ const server = http.createServer((req,res) => {
     const folders = getFolders(defPath, {});
     
     try {    
-        res.writeHead(200, {'Content-Type': 'text/html'});
         let myURL = req.url;
-
-        if (myURL === '/detail') {
-            const detail = displayHome(folders);
-            res.end(pageTemplate('Detailed',detail));
-            return;
+        
+        let myURLExploded = myURL.split('/');
+        if (myURLExploded[1] === 'assets'){
+            fs.readFile('./public' + myURL, (err,data) => {
+                if (err) {
+                    res.writeHead(404);
+                    res.end(JSON.stringify(err));
+                    return;
+                }
+                
+                res.writeHead(200);
+                res.end(data);
+            });
+            
         }
-
-        let parameters = myURL.split('?');
-        if (parameters.length > 1) {
-            let files = parameters[1].split('&');
-
-            for (let i = 0; i < files.length; i++) {
-                files[i] = files[i].split('=')
-
-                for (let j = 0; j < files[i].length; j++) {
-
-                    if (files[i][j] === 'file' && displayList(files[i][j+1])) {
-                        let display = displayList(files[i][j+1]); 
-                        let joinedDisplay = display.join('');
-                        let shortPath = shortenPath(files[i][j+1]);
-
-                        res.end(pageTemplate(shortPath,`<h1>${shortPath}</h1>${joinedDisplay}`));
-
-                        return;
+        else{
+            
+            res.writeHead(200, {'Content-Type': 'text/html'});
+            
+            if (myURL === '/detail') {
+                const detail = displayHome(folders);
+                res.end(pageTemplate('Detailed',detail));
+                return;
+            }
+            
+            let parameters = myURL.split('?');
+            if (parameters.length > 1) {
+                let files = parameters[1].split('&');
+                
+                for (let i = 0; i < files.length; i++) {
+                    files[i] = files[i].split('=')
+                    
+                    for (let j = 0; j < files[i].length; j++) {
+                        
+                        if (files[i][j] === 'file' && displayList(files[i][j+1])) {
+                            
+                            let data = getData(files[i][j+1]);
+                            
+                            let display = displayList(files[i][j+1]); 
+                            let graph = graphTemplate(data, display);
+                            
+                            res.end(graph);
+                            
+                            return;
+                        }
                     }
                 }
             }
+            
+            const boxes = displayBoxes(folders);
+            res.end(pageTemplate('Home',boxes));
         }
-
-        const boxes = displayBoxes(folders);
-        res.end(pageTemplate('Home',boxes));
     }
     catch (e) {
-        res.end(e);
+
+        console.error(e);
+        res.end(JSON.stringify(e));
     }
 });
         
