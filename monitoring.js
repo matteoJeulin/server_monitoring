@@ -1,104 +1,68 @@
 
+const { checkErrors } = require('./src/check/checkErrors');
+const {sendEmail} = require('./src/check/sendEmail');
+const { getDate } = require('./src/get/getDate');
+const { getFolders } = require('./src/get/getFolders');
+const { getValue } = require('./src/get/getValue');
 
-const {fileNames} = require('./src/modify/fileNames');
-const { splitText } = require('./src/modify/splitText');
-const { shortenPath } = require('./src/modify/shortenPath');
-const {splitDocuments} = require('./src/modify/splitDocuments');
-
-const {displayHome} = require('./src/display/displayHome');
-const {displayList} = require('./src/display/displayList');
-const { displayBoxes } = require('./src/display/displayBoxes');
-const {pageTemplate} = require('./src/display/pageTemplate');
-const { graphTemplate } = require('./src/display/graphTemplate');
-
-const {checkErrors} = require('./src/check/checkErrors');
-
-const {getFolders} = require('./src/get/getFolders');
-const { getFile } = require('./src/get/getFile');
-const {readDirectory} = require('./src/get/readDirectory');
-const {readFiles} = require('./src/get/readFiles');
-
-
-const http = require('http');
-const fs = require('fs');
-const { getData } = require('./src/get/getData');
-
-
-// const allPaths = [];
-
-// for(keys in folders) {
-//     for(let i = 0; i < folders[keys].length; i++) {
-//         allPaths.push(folders[keys][i].path);
-//     }
-// } 
-// const defPath = 'C:/Users/matte/OneDrive/Documents/__job/server_monitoring/src/serverStatus';
 const defPath = './src/serverStatus';
 
+let object = getFolders(defPath);
+let err = [];
 
-const server = http.createServer((req,res) => {
-    
-    const folders = getFolders(defPath, {});
-    
-    try {    
-        let myURL = req.url;
-        
-        let myURLExploded = myURL.split('/');
-        if (myURLExploded[1] === 'assets'){
-            fs.readFile('./public' + myURL, (err,data) => {
-                if (err) {
-                    res.writeHead(404);
-                    res.end(JSON.stringify(err));
-                    return;
-                }
-                
-                res.writeHead(200);
-                res.end(data);
-            });
-            
-        }
-        else{
-            
-            res.writeHead(200, {'Content-Type': 'text/html'});
-            
-            if (myURL === '/detail') {
-                const detail = displayHome(folders);
-                res.end(pageTemplate('Detailed',detail));
-                return;
-            }
-            
-            let parameters = myURL.split('?');
-            if (parameters.length > 1) {
-                let files = parameters[1].split('&');
-                
-                for (let i = 0; i < files.length; i++) {
-                    files[i] = files[i].split('=')
-                    
-                    for (let j = 0; j < files[i].length; j++) {
-                        
-                        if (files[i][j] === 'file' && displayList(files[i][j+1])) {
-                            
-                            let data = getData(files[i][j+1]);
-                            
-                            let display = displayList(files[i][j+1]); 
-                            let graph = graphTemplate(data, display);
-                            
-                            res.end(graph);
-                            
-                            return;
-                        }
+let currErrState = [];
+for (keys in object) {
+    for (let i = 0; i < object[keys].length; i++) {
+        currErrState.push({
+            path: object[keys][i].path,
+            errState: 0
+        })
+    }
+}
+
+setInterval(() => {
+
+    let upErrState = currErrState;
+
+    object = getFolders(defPath);
+    err = [];
+
+    for (keys in object) {
+        for (let i = 0; i < object[keys].length; i++) {
+            let currFile = object[keys][i]
+            let path = currFile.path;
+            let refresh = currFile.refreshRate;
+            let date = getDate(path);
+            let value = getValue(path);
+            let min = currFile.min;
+            let max = currFile.max;
+
+            let currErr = checkErrors(path, max, min, value, refresh, date);
+            if (currErr !== '') {
+                for (let i = 0; i < upErrState.length; i++) {
+                    if (currErrState[i].path === path && currErrState[i].errState === 0) {
+                        upErrState[i].errState = 1;
+                        err.push(currErr);
+                        continue;
                     }
                 }
             }
-            
-            const boxes = displayBoxes(folders);
-            res.end(pageTemplate('Home',boxes));
+            else {
+                for (let i = 0; i < upErrState.length; i++) {
+                    if (currErrState[i].path === path) {
+                        upErrState[i].errState = 0;
+                        continue;
+                    }
+                }
+            }
         }
     }
-    catch (e) {
 
-        console.error(e);
-        res.end(JSON.stringify(e));
+    console.log(err);
+    if(err.length !== 0) {
+        sendEmail(err);
     }
-});
-        
-server.listen(3000, '0.0.0.0');
+
+    currErrState = upErrState;
+
+},60000);

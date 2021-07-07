@@ -29,6 +29,7 @@ function displayList (path) {
             </li>
             </span>`
         }
+        text.reverse();
         text.unshift(`<h1>${shortenPath(path)}</h1>`);
     
         return text.join('');
