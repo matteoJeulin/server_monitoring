@@ -20,23 +20,15 @@ const {readFiles} = require('./src/get/readFiles');
 
 const { getData } = require('./src/get/getData');
 
+const config = require('./config/config.json');
+
 const http = require('http');
 const fs = require('fs');
 
-
-
-// const allPaths = [];
-
-// for(keys in folders) {
-//     for(let i = 0; i < folders[keys].length; i++) {
-//         allPaths.push(folders[keys][i].path);
-//     }
-// } 
-const defPath = './src/serverStatus';
-
+const defPath = config.defPath.directory;
 
 const server = http.createServer((req,res) => {
-    
+
     const folders = getFolders(defPath, {});
     
     try {    

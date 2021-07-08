@@ -1,10 +1,10 @@
 
-const credentials = require('./credentials.json');
+const config = require('./config.json');
 
 let nodemailer = require('nodemailer');
 
-let transporter = nodemailer.createTransport(credentials.transport);
+let transporter = nodemailer.createTransport(config.transport);
 
-let mailOptions = credentials.options;
+let mailOptions = config.options;
 
 module.exports = {transporter, mailOptions};

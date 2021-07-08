@@ -1,21 +1,10 @@
-
+const config = require('../../config/config.json')
 
 function shortenPath(path) {
+    
+    let currDir = path.split(config.defPath.directory);
 
-    let currentDir = path.split('/');
-    let rightURL = false;
-    while (!rightURL) {
-        if (currentDir[0] === 'serverStatus') {
-            rightURL = true;
-            currentDir.shift();
-        }
-        else {
-            currentDir.shift();
-        }
-    }
-    let currentDirJoined = currentDir.join('/');
-
-    return currentDirJoined;
+    return currDir[1];
 }
 
 

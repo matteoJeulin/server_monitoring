@@ -9,6 +9,7 @@ const graphTemplate = (data, body) => {
     <head>
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta http-equiv="Refresh" content="60">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title></title>
         <script src="./public/assets/graph.js"></script>
@@ -57,10 +58,6 @@ const graphTemplate = (data, body) => {
         c.lineTo(xPadding, graph.height - yPadding);
         c.lineTo(graph.width, graph.height - yPadding);
         c.stroke();
-
-        // for(let i = 0; i < data.length; i ++) {
-        //     c.fillText(data[i].date, getXPixel(i), graph.height - yPadding + 20);
-        // }
 
         c.textAlign = "right"
         c.textBaseline = "middle";

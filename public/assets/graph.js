@@ -28,7 +28,6 @@ function drawGraph(id, data) {
     let graph = document.getElementById(id);
     let c = graph.getContext('2d');
     let maxY = getMaxY(data);
-    console.log(data);
     
     let xPadding = 3;
     let yPadding = 3;
@@ -40,22 +39,8 @@ function drawGraph(id, data) {
     c.font = 'italic 8pt sans-serif';
     c.textAlign = "center";
     
-    // c.beginPath();
-    // c.moveTo(xPadding, yPadding);
-    // c.lineTo(xPadding, y - yPadding);
-    // c.lineTo(x, y - yPadding);
-    // c.stroke();
-    
-    // for(let i = 0; i < data.length; i ++) {
-    //     c.fillText(data[i].date, getXPixel(i, x, data), y - yPadding + 20);
-    // }
-    
     c.textAlign = "right"
     c.textBaseline = "middle";
-    
-    // for(let i = 0; i < maxY; i += 10) {
-    //     c.fillText(i, xPadding - 10, getYPixel(i, y, maxY));
-    // }
     
     
     c.strokeStyle = '#fff';

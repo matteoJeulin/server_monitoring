@@ -28,21 +28,3 @@ function checkErrors(path, max, min, value, refreshRate, date) {
 }
 
 module.exports = {checkErrors};
-
-// let value = parseFloat(getValue(path));
-
-// let file = path.split('/');
-// let fileExploded = file.pop().split('.');
-
-// let max = parseFloat(fileExploded[2]);
-// let min = parseFloat(fileExploded[1]);
-
-// let shortPath = shortenPath(path);
-
-// if(max<value) {
-//     throw new Error(`Overperformance for ${fileExploded[0]} in ${shortPath}`);
-// }
-
-// else if (min>value) {
-//     throw new Error(`Underperformance for ${fileExploded[0]} in ${shortPath}`);
-// }

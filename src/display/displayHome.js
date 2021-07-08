@@ -4,7 +4,6 @@ const { getDate } = require('../get/getDate');
 const { getFolders } = require('../get/getFolders');
 const { getValue } = require('../get/getValue');
 
-// const object = getFolders('C:/Users/matte/OneDrive/Documents/__job/server_monitoring/src/serverStatus',{})
 
 const color = ['#0000FF', '#00FF00', '#FF0000', '#000000'];
 

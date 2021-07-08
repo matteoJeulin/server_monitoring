@@ -1,4 +1,5 @@
-config/credentials.json
+config/config.json
+public/test.html
 
 # Logs
 logs

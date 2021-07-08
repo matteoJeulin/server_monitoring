@@ -5,7 +5,9 @@ const { getDate } = require('./src/get/getDate');
 const { getFolders } = require('./src/get/getFolders');
 const { getValue } = require('./src/get/getValue');
 
-const defPath = './src/serverStatus';
+const config = require('./config/config.json');
+
+const defPath = config.defPath.directory;
 
 let object = getFolders(defPath);
 let err = [];

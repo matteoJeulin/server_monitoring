@@ -12,4 +12,7 @@
     "to": "yourfriend@yahoo.com",
     "subject": "Hello",
     "html": "<h1>Header</h1>"
+},
+"defPath" : {
+  "directory": "your/path/to/your/directory"
 }}

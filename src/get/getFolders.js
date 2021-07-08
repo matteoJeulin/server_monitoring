@@ -34,6 +34,5 @@ function getFolders(initPath, folders = {}) {
     return folders;
 }
 
-// let folders = getFolders('C:/Users/matte/OneDrive/Documents/__job/server_monitoring/src/serverStatus',{});
 
 module.exports = {getFolders};
