@@ -1,8 +1,8 @@
 
-const {checkColor} = require('../check/checkColor');
-const { getDate } = require('../get/getDate');
-const { getFolders } = require('../get/getFolders');
-const { getValue } = require('../get/getValue');
+const {checkColor} = require('./checkColor');
+const { getDate } = require('../srcServer/get/getDate');
+const { getFolders } = require('../srcServer/get/getFolders');
+const { getValue } = require('../srcServer/get/getValue');
 
 
 const color = ['#0000FF', '#00FF00', '#FF0000', '#000000'];

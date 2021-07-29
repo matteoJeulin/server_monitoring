@@ -1,13 +1,17 @@
 
-const { checkErrors } = require('./src/check/checkErrors');
-const {sendEmail} = require('./src/check/sendEmail');
-const { getDate } = require('./src/get/getDate');
-const { getFolders } = require('./src/get/getFolders');
-const { getValue } = require('./src/get/getValue');
+const { checkErrors } = require('./srcServer/check/checkErrors');
+const {sendEmail} = require('./util/sendEmail');
+const { getDate } = require('./srcServer/get/getDate');
+const { getFolders } = require('./srcServer/get/getFolders');
+const { getValue } = require('./srcServer/get/getValue');
+const fs = require('fs');
 
 const config = require('./config/config.json');
+const { shortenPath } = require('./srcServer/modify/shortenPath');
+const { writeErr } = require('./util/writeErr');
+const { getCurrDate } = require('./util/getCurrDate');
 
-const defPath = config.defPath.directory;
+const defPath = config.defPath.directoryServer;
 
 let object = getFolders(defPath);
 let err = [];
@@ -44,14 +48,15 @@ setInterval(() => {
                 for (let i = 0; i < upErrState.length; i++) {
                     if (currErrState[i].path === path && currErrState[i].errState === 0) {
                         upErrState[i].errState = 1;
-                        err.push(currErr);
+                        err.push(`${currErr}`);
                         continue;
                     }
                 }
             }
             else {
                 for (let i = 0; i < upErrState.length; i++) {
-                    if (currErrState[i].path === path) {
+                    if (currErrState[i].path === path && currErrState[i].path !== upErrState[i].path) {
+                        writeErr({fileName: 'serverLog.txt', text: `${shortenPath(currErrState[i].path, defPath)} fixed :D`, src: shortenPath(currErrState[i].path, defPath)});
                         upErrState[i].errState = 0;
                         continue;
                     }
@@ -60,11 +65,13 @@ setInterval(() => {
         }
     }
 
-    console.log(err);
     if(err.length !== 0) {
         sendEmail(err);
+        for (let i = 0; i < err.length; i++) {
+            writeErr({fileName: 'serverLog.txt', text: err[i], src: err[i].split(' ')[0]});
+        }
     }
 
     currErrState = upErrState;
 
-},60000);
+}, config.time.refresh);

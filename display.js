@@ -1,36 +1,33 @@
 
+const {displayHome} = require('./display/displayHome');
+const {displayList} = require('./display/displayList');
+const { displayBoxes } = require('./display/displayBoxes');
+const {pageTemplate} = require('./display/pageTemplate');
+const { graphTemplate } = require('./display/graphTemplate');
 
-const {fileNames} = require('./src/modify/fileNames');
-const { splitText } = require('./src/modify/splitText');
-const { shortenPath } = require('./src/modify/shortenPath');
-const {splitDocuments} = require('./src/modify/splitDocuments');
+const {getFolders} = require('./srcServer/get/getFolders');
 
-const {displayHome} = require('./src/display/displayHome');
-const {displayList} = require('./src/display/displayList');
-const { displayBoxes } = require('./src/display/displayBoxes');
-const {pageTemplate} = require('./src/display/pageTemplate');
-const { graphTemplate } = require('./src/display/graphTemplate');
-
-const {checkErrors} = require('./src/check/checkErrors');
-
-const {getFolders} = require('./src/get/getFolders');
-const { getFile } = require('./src/get/getFile');
-const {readDirectory} = require('./src/get/readDirectory');
-const {readFiles} = require('./src/get/readFiles');
-
-const { getData } = require('./src/get/getData');
+const { getData } = require('./srcServer/get/getData');
 
 const config = require('./config/config.json');
 
 const http = require('http');
 const fs = require('fs');
 
-const defPath = config.defPath.directory;
+const defPathS = config.defPath.directoryServer;
+const defPathW = config.defPath.directoryWebsite;
+const defPathD = config.defPath.directoryDatabase;
+const defPathZ = config.defPath.directoryZmq;
+const defPathK = config.defPath.directorySocket;
 
 const server = http.createServer((req,res) => {
 
-    const folders = getFolders(defPath, {});
-    
+    const serverData = getFolders(defPathS, defPathS, 'S');
+    const siteData = getFolders(defPathW, defPathW, 'W');
+    const databaseData = getFolders(defPathD, defPathD, 'D');
+    const zmqData = getFolders(defPathZ, defPathZ, 'Z');
+    const socketData = getFolders(defPathK, defPathK, 'K');
+
     try {    
         let myURL = req.url;
         
@@ -53,7 +50,7 @@ const server = http.createServer((req,res) => {
             res.writeHead(200, {'Content-Type': 'text/html'});
             
             if (myURL === '/detail') {
-                const detail = displayHome(folders);
+                const detail = displayHome(serverData);
                 res.end(pageTemplate('Detailed',detail));
                 return;
             }
@@ -67,11 +64,14 @@ const server = http.createServer((req,res) => {
                     
                     for (let j = 0; j < files[i].length; j++) {
                         
-                        if (files[i][j] === 'file' && displayList(files[i][j+1])) {
+                        let pathToDoc = files[i][j+1].split('/');
+                        pathToDoc.pop();
+                        let pathToDocJ = pathToDoc.join('/') 
+                        if (files[i][j] === 'file' && displayList(files[i][j+1], pathToDocJ)) {
                             
                             let data = getData(files[i][j+1]);
                             
-                            let display = displayList(files[i][j+1]); 
+                            let display = displayList(files[i][j+1], pathToDocJ); 
                             let graph = graphTemplate(data, display);
                             
                             res.end(graph);
@@ -82,8 +82,15 @@ const server = http.createServer((req,res) => {
                 }
             }
             
-            const boxes = displayBoxes(folders);
-            res.end(pageTemplate('Home',boxes));
+            const boxesS = displayBoxes(serverData, defPathS);
+            const boxesW = displayBoxes(siteData, defPathW);
+            const boxesD = displayBoxes(databaseData, defPathD);
+            const boxesZ = displayBoxes(zmqData, defPathZ);
+            const boxesK = displayBoxes(socketData, defPathK);
+
+            const disp = `<div class="container">${boxesS}${boxesW}${boxesD}${boxesZ}${boxesK}</div>`;
+
+            res.end(pageTemplate('Home',disp));
         }
     }
     catch (e) {

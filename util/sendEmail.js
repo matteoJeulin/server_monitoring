@@ -1,5 +1,5 @@
 
-const {transporter, mailOptions} = require('../../config/config');
+const {transporter, mailOptions} = require('../config/config');
 const nodemailer = require('nodemailer');
 
 function sendEmail(err) {

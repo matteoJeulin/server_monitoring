@@ -14,5 +14,62 @@
     "html": "<h1>Header</h1>"
 },
 "defPath" : {
-  "directory": "your/path/to/your/directory"
-}}
+  "directoryServer": "your/path/to/your/root/directory/for/servers/logs",
+  "directoryWebsite": "your/path/to/your/root/directory/for/websites/logs",
+  "directoryDatabase": "your/path/to/your/root/directory/for/databases/logs",
+  "directoryZmq": "your/path/to/your/root/directory/for/zmq/logs",
+  "directorySocket": "your/path/to/your/root/directory/for/socket/logs",
+  "directoryErrors": "your/path/to/your/root/directory/for/error/logs"
+},
+
+"sites": [
+    {
+        "site": "https://www.example0.com",
+        "message": "test",
+        "errStatus": 0
+    },
+    {
+        "site": "https://www.example1.com", 
+        "message": "test",
+        "errStatus": 0 
+    },
+    {
+        "site": "https://www.example2.com",
+        "message": "message",
+        "errStatus": 0
+    },
+    {
+        "site": "https://www.example3.com",
+        "message": "message",
+        "errStatus": 0
+    }
+],
+"time" : {
+    "refresh": 60000,
+    "slowResp": 15000,
+    "timeout": 30000
+},
+"fileConfig" :{
+    "maxZmq": "anyNumber",
+    "minZmq": "anyNumber",
+    "maxSocket": "anyNumber",
+    "minSocket": "anyNumber" 
+},
+"sockets" : [
+    {
+        "site": "https://www.anywebsite.io",
+        "stream": "thestreamyouwanttojoin"
+    }
+],"connections" : [
+    {
+        "host": "0.0.0.0",
+        "port": "3000",
+        "user": "username",
+        "password": "password",
+        "database": "databasename",
+        "query": "ANY MYSQL QUERY YOU WANT"
+    }
+],
+"IPlist" : [
+    "http://0.0.0.0:3000"
+]}

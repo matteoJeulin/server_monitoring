@@ -1,12 +1,13 @@
 
-const { checkColor } = require("../check/checkColor");
-const { getFile } = require("../get/getFile");
-const { shortenPath } = require("../modify/shortenPath");
-const { splitText } = require("../modify/splitText");
+const { checkColor } = require("./checkColor");
+const { getFile } = require("../util/getFile");
+const { shortenPath } = require("../srcServer/modify/shortenPath");
+const { splitText } = require("../util/splitText");
+const config = require('../config/config.json');
 
 const color = ['#0000FF', '#00FF00', '#FF0000'];
 
-function displayList (path) {
+function displayList (path, directory) {
     let text = getFile(path);
 
     if (text) {
@@ -17,7 +18,6 @@ function displayList (path) {
         
         let max = fileName.split('.');
         let min = max[1];
-        let refreshRate = max[3];
         max = max[2];
         
         for (let i = 0; i < text.length; i++) {
@@ -30,7 +30,13 @@ function displayList (path) {
             </span>`
         }
         text.reverse();
-        text.unshift(`<h1>${shortenPath(path)}</h1>`);
+        let shortPath = shortenPath(path, directory);
+        if (!shortPath) {
+            let a = path.split('/');
+            let b = a[a.length-1].split('.');
+            shortPath = b[0];
+        }
+        text.unshift(`<h1>${shortPath}</h1>`);
     
         return text.join('');
     }

@@ -1,5 +1,5 @@
-const { getFile } = require("../get/getFile");
-const { splitText } = require("../modify/splitText");
+const { getFile } = require("../util/getFile");
+const { splitText } = require("../util/splitText");
 
 const graphTemplate = (data, body) => {
 

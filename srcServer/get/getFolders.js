@@ -1,15 +1,16 @@
 
-const fs = require('fs');
-const { readDirectory } = require('./readDirectory');
+const { readDirectory } = require('../../util/readDirectory');
 const { shortenPath } = require('../modify/shortenPath');
+const config = require('../../config/config.json');
 
-function getFolders(initPath, folders = {}) {
+
+function getFolders(initPath, directory, id, folders = {}, j = 0) {
     let URL = initPath;
     let files = readDirectory(URL);
 
     for (let i = 0; i < files.length; i++) {
         let fileName = files[i].split('.');
-        let currentDir = shortenPath(URL);
+        let currentDir = shortenPath(URL, directory);
 
         if (fileName[fileName.length-1] === 'txt') {
             let fileProp = {
@@ -17,7 +18,8 @@ function getFolders(initPath, folders = {}) {
                 path: `${URL}/${files[i]}`,
                 min : fileName[1],
                 max : fileName[2],
-                refreshRate : fileName[3]
+                refreshRate : fileName[3],
+                id: `${id}-${fileName[0]}-${j}-${i}`
             };
             if (folders[currentDir]) {
                 folders[currentDir].push(fileProp);
@@ -27,7 +29,7 @@ function getFolders(initPath, folders = {}) {
             }
         }
         else {
-            getFolders(`${URL}/${files[i]}`,folders);
+            getFolders(`${URL}/${files[i]}`, directory, id, folders, j++);
         }
     }
     

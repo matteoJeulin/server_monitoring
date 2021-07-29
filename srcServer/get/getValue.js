@@ -1,5 +1,5 @@
-const { getFile } = require("./getFile");
-const { splitText } = require("../modify/splitText");
+const { getFile } = require("../../util/getFile");
+const { splitText } = require("../../util/splitText");
 
 function getValue(path) {
     let text = getFile(path);
