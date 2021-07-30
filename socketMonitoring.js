@@ -1,5 +1,7 @@
 const io = require ('socket.io-client');
 const fs = require('fs');
+const { exec } = require('child_process');
+
 const { writeErr } = require('./util/writeErr');
 const {alert} = require('./util/alert');
 const config = require('./config/config.json');
@@ -19,12 +21,14 @@ for (let i = 0; i < sockets.length; i++) {
     
     let timer = setTimeout(() => {
         alert([`${sockets[i].site}, stream: ${sockets[i].stream}, took too long to respond`], sockets[i].site);
+        sockets[i].bash;
     }, config.time.slowResp);
 
     socket.on('price_update', (dataFromServer) => {
         clearTimeout(timer);
         timer = setTimeout(() => {
             alert([`${sockets[i].site}, stream: ${sockets[i].stream}, took too long to respond`], sockets[i].site);
+            exec(sockets[i].bash);
         }, config.time.slowResp);
     });
 

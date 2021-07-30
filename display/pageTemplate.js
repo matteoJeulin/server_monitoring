@@ -13,6 +13,7 @@ const pageTemplate = (title, body) => {
                 body{
                     margin: 0px;
                     overflow:hidden;
+                    background:#2eb82e;
                 }
                 .txt{
                     position: absolute;
@@ -27,10 +28,11 @@ const pageTemplate = (title, body) => {
                     width: 100%;
                 }
                 .box{
-                    height: auto;
-                    width: auto;
+                    height: 0;
+                    width: 0;
                     margin: 1px;
                     position: relative;
+                    display:none;
                 }
                 .box-0{
                     background-color: #002080;
@@ -45,6 +47,7 @@ const pageTemplate = (title, body) => {
                     background-color: #333333;
                 }
             </style>
+
             <script src="/assets/graph.js"></script>
             <script>
             const onLoadFunctions = [];
@@ -59,6 +62,8 @@ const pageTemplate = (title, body) => {
 
             onLoadFunctions.push(()=>{
                 resizeSquares();
+                document.querySelectorAll(".box").forEach((e)=> e.style.display="block");
+                document.querySelector("body").style.background="#FFFFFF";
             });
             </script>
         </head>
@@ -67,6 +72,9 @@ const pageTemplate = (title, body) => {
         </body>
     </html>`;
 }
+
+
+module.exports = {pageTemplate};
 
 
 module.exports = {pageTemplate};

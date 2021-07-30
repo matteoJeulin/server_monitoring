@@ -7,3 +7,6 @@
 2021-07-30-12-42-50-231;https://www.mataf.net/fr/ghdghd;https://www.mataf.net/fr/ghdghd is down... :'( Error Request failed with status code 404
 2021-07-30-12-42-50-232;https://lycee-champollion.fr;https://lycee-champollion.fr is down... :'( It didn't contain fgfhhfgghjcvbnxckcvghsddfjhvzxkjhhg
 2021-07-30-12-42-50-233;https://www.mataf.net/fr/fgdffgffghfghh;https://www.mataf.net/fr/fgdffgffghfghh is down... :'( Error Request failed with status code 404
+2021-07-30-14-40-09-349;https://www.mataf.net/fr/ghdghd;https://www.mataf.net/fr/ghdghd is down... :'( Error Request failed with status code 404
+2021-07-30-14-40-09-349;https://lycee-champollion.fr;https://lycee-champollion.fr is down... :'( It didn't contain fgfhhfgghjcvbnxckcvghsddfjhvzxkjhhg
+2021-07-30-14-40-09-349;https://www.mataf.net/fr/fgdffgffghfghh;https://www.mataf.net/fr/fgdffgffghfghh is down... :'( Error Request failed with status code 404

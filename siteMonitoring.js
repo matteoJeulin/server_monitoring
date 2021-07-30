@@ -1,6 +1,7 @@
 
 const config = require('./config/config.json');
 const fs = require('fs');
+const { exec } = require('child_process');
 
 const {sendEmail} = require('./util/sendEmail');
 const { checkActivity } = require('./srcWebsite/checkActivity');
@@ -9,6 +10,10 @@ const { getCurrDate } = require('./util/getCurrDate');
 
 
 let sites = config.sites;
+
+for (let i = 0; i < sites.length; i++) {
+    sites[i].errStatus = 0;
+}
 
 setInterval(() => {
     
@@ -29,6 +34,7 @@ setInterval(() => {
                 if(data[i].status === 'rejected' && data[i].reason.url === sites[j].site && sites[j].errStatus === 0) {
                     sitesUpdated[j].errStatus = 1;
                     err.push(data[i].reason.errMessage);
+                    exec(sites[i].bash);
                 }
                 else if (data[i].status === 'fulfilled' && data[i].value === sites[j].site && sites[j].site !== sitesUpdated[j].site) {
                     writeErr('websiteLog.txt', `${sites[j].site} fixed :D`);

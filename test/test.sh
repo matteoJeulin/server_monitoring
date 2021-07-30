@@ -1,0 +1,1 @@
+echo "HELLO WORLD" >> /home/job/server_monitoring/test/test.txt

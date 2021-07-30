@@ -26,22 +26,22 @@
     {
         "site": "https://www.example0.com",
         "message": "test",
-        "errStatus": 0
+        "bash": "any shell command"
     },
     {
         "site": "https://www.example1.com", 
         "message": "test",
-        "errStatus": 0 
+        "bash": "any shell command"
     },
     {
         "site": "https://www.example2.com",
         "message": "message",
-        "errStatus": 0
+        "bash": "any shell command"
     },
     {
         "site": "https://www.example3.com",
         "message": "message",
-        "errStatus": 0
+        "bash": "any shell command"
     }
 ],
 "time" : {
@@ -58,7 +58,8 @@
 "sockets" : [
     {
         "site": "https://www.anywebsite.io",
-        "stream": "thestreamyouwanttojoin"
+        "stream": "thestreamyouwanttojoin",
+        "bash": "any shell command"
     }
 ],"connections" : [
     {
@@ -67,9 +68,13 @@
         "user": "username",
         "password": "password",
         "database": "databasename",
-        "query": "ANY MYSQL QUERY YOU WANT"
+        "query": "ANY MYSQL QUERY YOU WANT",
+        "bash": "any shell command"
     }
 ],
 "IPlist" : [
-    "http://0.0.0.0:3000"
+    {
+        "IP":"http://0.0.0.0:3000",
+        "bash": "any shell command"
+    }
 ]}

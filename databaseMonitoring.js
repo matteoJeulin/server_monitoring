@@ -1,6 +1,7 @@
 
-const mysql = require('mysql');
 const fs = require('fs');
+const { exec } = require('child_process');
+const mysql = require('mysql');
 const config = require('./config/config.json');
 const { writeErr } = require('./util/writeErr');
 const { getCurrDate } = require('./util/getCurrDate');
@@ -8,7 +9,14 @@ const { getCurrDate } = require('./util/getCurrDate');
 const defPath = config.defPath.directoryDatabase;
 const connections = config.connections;
 
+for(let i = 0; i < connections.length; i++) {
+    connections[i].errStatus = 0;
+}
+
 setInterval(() => {
+
+    let connectionsUpdated = connections;
+
     for (let i = 0; i < connections.length; i++) {
 
         const connection = mysql.createConnection(connections[i]);
@@ -17,7 +25,14 @@ setInterval(() => {
         
         connection.query(connections[i].query, (err, results) => {
             let host = connections[i].host.split('.').join('-');
-            if(err) writeErr({fileName: 'databaseLog.txt', src: `${host}_${connections[i].database}`, text:`Error for ${host}_${connections[i].database}: ${err.message}`});
+            if(err && connections[i].errStatus === 0) {
+                connectionsUpdated[i].errStatus = 1;
+                writeErr({fileName: 'databaseLog.txt', src: `${host}_${connections[i].database}`, text:`Error for ${host}_${connections[i].database}: ${err.message}`});
+                exec(connections[i].bash);
+            }
+            else {
+                connectionsUpdated[i].errStatus = 0;
+            }
             let end = Date.now();
             let delay = end - start;
             if(results !== undefined){
@@ -27,4 +42,7 @@ setInterval(() => {
 
         connection.end();
     }
+
+    connections = connectionsUpdated;
+
 }, config.time.refresh); 
