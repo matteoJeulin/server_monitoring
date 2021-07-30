@@ -13,7 +13,7 @@ const { getCurrDate } = require('./util/getCurrDate');
 
 const defPath = config.defPath.directoryServer;
 
-let object = getFolders(defPath);
+let object = getFolders(defPath, defPath);
 let err = [];
 
 let currErrState = [];
@@ -30,7 +30,7 @@ setInterval(() => {
 
     let upErrState = currErrState;
 
-    object = getFolders(defPath);
+    object = getFolders(defPath, defPath);
     err = [];
 
     for (keys in object) {

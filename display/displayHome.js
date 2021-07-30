@@ -1,7 +1,6 @@
 
 const {checkColor} = require('./checkColor');
 const { getDate } = require('../srcServer/get/getDate');
-const { getFolders } = require('../srcServer/get/getFolders');
 const { getValue } = require('../srcServer/get/getValue');
 
 

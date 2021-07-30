@@ -10,6 +10,10 @@ const pageTemplate = (title, body) => {
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>${title}</title>
             <style>
+                body{
+                    margin: 0px;
+                    overflow:hidden;
+                }
                 .txt{
                     position: absolute;
                     top: 1px;
@@ -19,10 +23,12 @@ const pageTemplate = (title, body) => {
                 .container{
                     display: flex;
                     flex-flow: row wrap;
+                    height: 100%;
+                    width: 100%;
                 }
                 .box{
-                    height:100px;
-                    width:100px;
+                    height: auto;
+                    width: auto;
                     margin: 1px;
                     position: relative;
                 }
@@ -40,8 +46,23 @@ const pageTemplate = (title, body) => {
                 }
             </style>
             <script src="/assets/graph.js"></script>
+            <script>
+            const onLoadFunctions = [];
+
+            function executeOnload() {
+                onLoadFunctions.forEach((fct)=>{
+                    fct();
+                }
+
+                );
+            }
+
+            onLoadFunctions.push(()=>{
+                resizeSquares();
+            });
+            </script>
         </head>
-        <body>
+        <body onload="executeOnload();">
             ${body}
         </body>
     </html>`;

@@ -30,7 +30,10 @@ for(let i = 0; i < IPlist.length; i++) {
 
 setInterval(() => {
     for(let i = 0; i < IPlist.length; i++) {
-        let fileName = IPlist[i].split('/').join('-').split('.').join('-').split(':').join('-');
+        let fileName = IPlist[i].split('/');
+        fileName.shift();
+        fileName.shift();
+        fileName = fileName.join('-').split('.').join('-').split(':').join('-');
         fs.writeFileSync(`${config.defPath.directoryZmq}/${fileName}.${config.fileConfig.minZmq}.${config.fileConfig.maxZmq}.${config.time.timeout}.txt`, `${getCurrDate()};${nbOfResp[i]}\n`, {flag: 'a'});
         nbOfResp[i] = 0;
     }

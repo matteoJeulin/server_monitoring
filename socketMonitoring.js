@@ -56,7 +56,10 @@ for (let i = 0; i < sockets.length; i++) {
 
 setInterval(() => {
     for(let i = 0; i < sockets.length; i++) {
-        let a = sockets[i].site.split('/').join('-').split('.').join('-').split(':').join('-');
+        let a = sockets[i].site.split('/')
+        a.shift();
+        a.shift();
+        a = a.join('-').split('.').join('-').split(':').join('-');
         let fileName = `${a}_${sockets[i].stream}`;
         fs.writeFileSync(`${config.defPath.directorySocket}/${fileName}.${config.fileConfig.minSocket}.${config.fileConfig.maxSocket}.${config.time.timeout}.txt`, `${getCurrDate()};${nbConnected[i]}\n`, {flag: 'a'});
         nbConnected[i] = 0;

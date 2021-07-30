@@ -16,11 +16,13 @@ setInterval(() => {
         connection.connect();
         
         connection.query(connections[i].query, (err, results) => {
-            if(err) writeErr({fileName: 'databaseLog.txt', src: connections[i].database, text:`Error for ${connections[i].database}: ${err.message}`});
+            let host = connections[i].host.split('.').join('-');
+            if(err) writeErr({fileName: 'databaseLog.txt', src: `${host}_${connections[i].database}`, text:`Error for ${host}_${connections[i].database}: ${err.message}`});
             let end = Date.now();
             let delay = end - start;
-            fs.writeFileSync(`${defPath}/${connections[i].database}.0.${config.time.slowResp}.${config.time.timeout}.txt`, `${getCurrDate()};${delay}\n`, {flag: 'a'});
-            console.log(results, delay);
+            if(results !== undefined){
+                fs.writeFileSync(`${defPath}/${host}_${connections[i].database}.0.${config.time.slowResp}.${config.time.timeout}.txt`, `${getCurrDate()};${delay}\n`, {flag: 'a'});
+            }
         });
 
         connection.end();

@@ -41,3 +41,9 @@
 2021-07-29-14-35-05-041;http://217.182.80.111:3001;Connected to http://217.182.80.111:3001, stream: EUR
 2021-07-29-14-35-05-051;http://217.182.81.208:3001;Connected to http://217.182.81.208:3001, stream: EURUSD
 2021-07-29-14-35-05-087;https://www.mataf.io;Connected to https://www.mataf.io, stream: USD
+2021-07-30-08-30-46-680;http://217.182.81.208:3001;Connected to http://217.182.81.208:3001, stream: EURUSD
+2021-07-30-08-30-46-700;http://217.182.80.111:3001;Connected to http://217.182.80.111:3001, stream: EUR
+2021-07-30-08-30-46-968;https://www.mataf.io;Connected to https://www.mataf.io, stream: USD
+2021-07-30-12-38-00-812;http://217.182.81.208:3001;Connected to http://217.182.81.208:3001, stream: EURUSD
+2021-07-30-12-38-00-850;http://217.182.80.111:3001;Connected to http://217.182.80.111:3001, stream: EUR
+2021-07-30-12-38-00-995;https://www.mataf.io;Connected to https://www.mataf.io, stream: USD

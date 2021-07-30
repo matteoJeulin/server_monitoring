@@ -32,8 +32,8 @@ const server = http.createServer((req,res) => {
         let myURL = req.url;
         
         let myURLExploded = myURL.split('/');
-        if (myURLExploded[1] === 'assets'){
-            fs.readFile('./public' + myURL, (err,data) => {
+        if (myURLExploded[1] === 'assets' || myURLExploded[1] === 'favicon.ico'){
+            fs.readFile('./public/' + myURL, (err,data) => {
                 if (err) {
                     res.writeHead(404);
                     res.end(JSON.stringify(err));

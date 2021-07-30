@@ -12,12 +12,16 @@ const graphTemplate = (data, body) => {
         <meta http-equiv="Refresh" content="60">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title></title>
-        <script src="./public/assets/graph.js"></script>
     </head>
     <body>
-        <canvas id="graph" width="900" height="600">   
+        <canvas id="graph">   
         </canvas> 
         <script>
+
+        let element = document.querySelector("#graph");
+        element.width = 0.95*window.innerWidth;
+        element.height = 0.7*window.innerHeight;
+
         let graph;
         let xPadding = 30;
         let yPadding = 30;
