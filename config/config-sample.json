@@ -26,28 +26,54 @@
     {
         "site": "https://www.example0.com",
         "message": "test",
-        "bash": "any shell command"
+        "bash": "any shell command",
+        "name": "whatever_name_you_want"
     },
     {
         "site": "https://www.example1.com", 
         "message": "test",
-        "bash": "any shell command"
+        "bash": "any shell command",
+        "name": "whatever_name_you_want"
     },
     {
         "site": "https://www.example2.com",
         "message": "message",
-        "bash": "any shell command"
+        "bash": "any shell command",
+        "name": "whatever_name_you_want"
     },
     {
         "site": "https://www.example3.com",
         "message": "message",
-        "bash": "any shell command"
+        "bash": "any shell command",
+        "name": "whatever_name_you_want"
     }
 ],
 "time" : {
-    "refresh": 60000,
-    "slowResp": 15000,
-    "timeout": 30000
+    "site": {
+        "refresh": 60000,
+        "slowResp": 15000,
+        "timeout": 30000
+    },
+    "server": {
+        "refresh": 45000,
+        "slowResp": 20000,
+        "timeout": 30000
+    },
+    "zmq": {
+        "refresh": 60000,
+        "slowResp": 15000,
+        "timeout": 30000
+    },
+    "sockets": {
+        "refresh": 60000,
+        "slowResp": 15000,
+        "timeout": 30000
+    },
+    "database": {
+        "refresh": 60000,
+        "slowResp": 15000,
+        "timeout": 30000
+    }
 },
 "fileConfig" :{
     "maxZmq": "anyNumber",
@@ -59,7 +85,8 @@
     {
         "site": "https://www.anywebsite.io",
         "stream": "thestreamyouwanttojoin",
-        "bash": "any shell command"
+        "bash": "any shell command",
+        "name": "whatever_name_you_want"
     }
 ],"connections" : [
     {
@@ -69,12 +96,14 @@
         "password": "password",
         "database": "databasename",
         "query": "ANY MYSQL QUERY YOU WANT",
-        "bash": "any shell command"
+        "bash": "any shell command",
+        "name": "whatever_name_you_want"
     }
 ],
 "IPlist" : [
     {
         "IP":"http://0.0.0.0:3000",
-        "bash": "any shell command"
+        "bash": "any shell command",
+        "name": "whatever_name_you_want"
     }
 ]}

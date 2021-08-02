@@ -2,18 +2,13 @@
 const fs = require('fs');
 const  config  = require('../config/config.json');
 const { getCurrDate } = require('../util/getCurrDate');
+const { logValue } = require('../util/writeLog');
 
 function getDelay(from, website) {
     
     let now = Date.now();
     let delay = now - from;
-
-    let siteName = website.split('/')
-    siteName.shift();
-    siteName.shift();
-    let siteNameJoined = siteName.join('-').split('.').join('-');
-
-    fs.writeFileSync(__dirname + `/siteStatus/${siteNameJoined}.0.${config.time.slowResp}.${config.time.timeout}.txt`, `${getCurrDate()};${delay}\n`, {flag: 'a'});
+    logValue({pathToDir: config.defPath.directoryWebsite, fileName: website, valueMax: config.time.site.slowResp, valueMin: 0, value: delay, refreshRate:config.time.site.refresh/1000});
 
 }
 

@@ -10,6 +10,7 @@ const config = require('./config/config.json');
 const { shortenPath } = require('./srcServer/modify/shortenPath');
 const { writeErr } = require('./util/writeErr');
 const { getCurrDate } = require('./util/getCurrDate');
+const { alert } = require('./util/writeLog');
 
 const defPath = config.defPath.directoryServer;
 
@@ -48,7 +49,10 @@ setInterval(() => {
                 for (let i = 0; i < upErrState.length; i++) {
                     if (currErrState[i].path === path && currErrState[i].errState === 0) {
                         upErrState[i].errState = 1;
-                        err.push(`${currErr}`);
+                        err.push({
+                            message: currErr, 
+                            src: shortenPath(currErrState[i].path, defPath)
+                        });
                         continue;
                     }
                 }
@@ -56,7 +60,8 @@ setInterval(() => {
             else {
                 for (let i = 0; i < upErrState.length; i++) {
                     if (currErrState[i].path === path && currErrState[i].path !== upErrState[i].path) {
-                        writeErr({fileName: 'serverLog.txt', text: `${shortenPath(currErrState[i].path, defPath)} fixed :D`, src: shortenPath(currErrState[i].path, defPath)});
+
+                        alert({fileName: 'serverLog', errList: [{message: `${shortenPath(currErrState[i].path, defPath)} fixed :D`, src: shortenPath(currErrState[i].path, defPath)}], sendMail: false});
                         upErrState[i].errState = 0;
                         continue;
                     }
@@ -66,12 +71,9 @@ setInterval(() => {
     }
 
     if(err.length !== 0) {
-        sendEmail(err);
-        for (let i = 0; i < err.length; i++) {
-            writeErr({fileName: 'serverLog.txt', text: err[i], src: err[i].split(' ')[0]});
-        }
+        alert({errList: err, fileName: 'serverLog', sendMail: true})
     }
 
     currErrState = upErrState;
 
-}, config.time.refresh);
+}, config.time.server.refresh);

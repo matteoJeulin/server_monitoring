@@ -5,9 +5,10 @@ const mysql = require('mysql');
 const config = require('./config/config.json');
 const { writeErr } = require('./util/writeErr');
 const { getCurrDate } = require('./util/getCurrDate');
+const { alert, logValue } = require('./util/writeLog');
 
 const defPath = config.defPath.directoryDatabase;
-const connections = config.connections;
+const connections = config.database;
 
 for(let i = 0; i < connections.length; i++) {
     connections[i].errStatus = 0;
@@ -15,7 +16,6 @@ for(let i = 0; i < connections.length; i++) {
 
 setInterval(() => {
 
-    let connectionsUpdated = connections;
 
     for (let i = 0; i < connections.length; i++) {
 
@@ -26,23 +26,21 @@ setInterval(() => {
         connection.query(connections[i].query, (err, results) => {
             let host = connections[i].host.split('.').join('-');
             if(err && connections[i].errStatus === 0) {
-                connectionsUpdated[i].errStatus = 1;
-                writeErr({fileName: 'databaseLog.txt', src: `${host}_${connections[i].database}`, text:`Error for ${host}_${connections[i].database}: ${err.message}`});
-                exec(connections[i].bash);
+                connections[i].errStatus = 1;
+                alert({fileName: 'databaseLog.txt', errList:[{message: `Error for ${connections[i].name}: ${err.message}`, src: `${connections[i].name}`}], bashToExecute: [connections[i].bash], sendMail: true});
             }
             else {
-                connectionsUpdated[i].errStatus = 0;
+                connections[i].errStatus = 0;
             }
             let end = Date.now();
             let delay = end - start;
             if(results !== undefined){
-                fs.writeFileSync(`${defPath}/${host}_${connections[i].database}.0.${config.time.slowResp}.${config.time.timeout}.txt`, `${getCurrDate()};${delay}\n`, {flag: 'a'});
+                logValue({pathToDir: defPath, fileName: connections[i].name, value: delay, valueMin: 0, valueMax: config.time.database.slowResp, refreshRate: config.time.database.refresh/1000})
             }
         });
 
         connection.end();
     }
 
-    connections = connectionsUpdated;
 
-}, config.time.refresh); 
+}, config.time.database.refresh); 

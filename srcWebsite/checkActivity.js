@@ -7,21 +7,23 @@ function checkActivity(site) {
 
     return new Promise((resolve, reject) => {
         let time = Date.now();
-        axios.get(site.site, {timeout: config.time.timeout})
+        axios.get(site.site, {timeout: config.time.site.timeout})
         .then((response) => {
-            getDelay(time, site.site);
+            getDelay(time, site.name);
             if (!response.data.includes(site.message) || response.status !== 200) {
                 reject({
                     url: site.site,
+                    name: site.name,
                     errMessage: `${site.site} is down... :'( It didn't contain ${site.message}`
                 });
             }
-            resolve(site.site);
+            resolve(site.name);
         })
         .catch((e) => {
-            getDelay(time, site.site);
+            getDelay(time, site.name);
             reject({
                 url: site.site,
+                name: site.name,
                 errMessage: `${site.site} is down... :'( Error ${e.message}`
             });
         });

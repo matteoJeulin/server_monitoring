@@ -5,8 +5,7 @@ const { exec } = require('child_process');
 
 const {sendEmail} = require('./util/sendEmail');
 const { checkActivity } = require('./srcWebsite/checkActivity');
-const { writeErr } = require('./util/writeErr');
-const { getCurrDate } = require('./util/getCurrDate');
+const { alert } = require('./util/writeLog');
 
 
 let sites = config.sites;
@@ -19,7 +18,8 @@ setInterval(() => {
     
     let err = [];
     let sitesUpdated = sites;
-    
+    let bash = [];
+
     const promiseArray = [];
     
     for (let i = 0; i < sites.length; i++) {
@@ -29,27 +29,27 @@ setInterval(() => {
     
     Promise.allSettled(promiseArray)
     .then((data) => {
-        for(let i = 0; i < data.length; i++) {
+        for (let i = 0; i < data.length; i++) {
             for (let j = 0; j < sites.length; j++) {                    
-                if(data[i].status === 'rejected' && data[i].reason.url === sites[j].site && sites[j].errStatus === 0) {
+                if (data[i].status === 'rejected' && data[i].reason.url === sites[j].site && sites[j].errStatus === 0) {
                     sitesUpdated[j].errStatus = 1;
-                    err.push(data[i].reason.errMessage);
-                    exec(sites[i].bash);
+                    err.push({
+                        message: data[i].reason.errMessage,
+                        src: data[i].reason.name
+                    });
+                    bash.push(sites[i].bash);
                 }
                 else if (data[i].status === 'fulfilled' && data[i].value === sites[j].site && sites[j].site !== sitesUpdated[j].site) {
-                    writeErr('websiteLog.txt', `${sites[j].site} fixed :D`);
+                    alert({fileName: 'websiteLog.txt', errList: [`${sites[j].name} fixed :D`], srcOfError: data[i].name, sendMail: false});
                     sitesUpdated.errStatus = 0;
                 }
             }
         }
 
         if (err.length > 0) {
-            sendEmail(err);
-            for(let i = 0; i < err.length; i++) {
-                writeErr({fileName:'websiteLog.txt', text: err[i], src: err[i].split(' ')[0]});
-            }
+            alert({errList: err, fileName: 'websiteLog', sendMail: true, bashToExecute: bash})
         }
         sites = sitesUpdated;
     });
 
-}, config.time.refresh);
+}, config.time.site.refresh);

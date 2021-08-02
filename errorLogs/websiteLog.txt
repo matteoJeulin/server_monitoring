@@ -10,3 +10,27 @@
 2021-07-30-14-40-09-349;https://www.mataf.net/fr/ghdghd;https://www.mataf.net/fr/ghdghd is down... :'( Error Request failed with status code 404
 2021-07-30-14-40-09-349;https://lycee-champollion.fr;https://lycee-champollion.fr is down... :'( It didn't contain fgfhhfgghjcvbnxckcvghsddfjhvzxkjhhg
 2021-07-30-14-40-09-349;https://www.mataf.net/fr/fgdffgffghfghh;https://www.mataf.net/fr/fgdffgffghfghh is down... :'( Error Request failed with status code 404
+2021-08-02-09-17-00-352;https://www.mataf.net/fr/ghdghd;https://www.mataf.net/fr/ghdghd is down... :'( Error Request failed with status code 404
+2021-08-02-09-17-00-352;https://lycee-champollion.fr;https://lycee-champollion.fr is down... :'( It didn't contain fgfhhfgghjcvbnxckcvghsddfjhvzxkjhhg
+2021-08-02-09-17-00-353;https://www.mataf.net/fr/fgdffgffghfghh;https://www.mataf.net/fr/fgdffgffghfghh is down... :'( Error Request failed with status code 404
+2021-08-02-09-21-54-795;https://www.mataf.net/fr/ghdghd;https://www.mataf.net/fr/ghdghd is down... :'( Error Request failed with status code 404
+2021-08-02-09-21-54-796;https://lycee-champollion.fr;https://lycee-champollion.fr is down... :'( It didn't contain fgfhhfgghjcvbnxckcvghsddfjhvzxkjhhg
+2021-08-02-09-21-54-796;https://www.mataf.net/fr/fgdffgffghfghh;https://www.mataf.net/fr/fgdffgffghfghh is down... :'( Error Request failed with status code 404
+2021-08-02-09-23-34-733;undefined;https://www.mataf.net/fr/ghdghd is down... :'( Error Request failed with status code 404
+2021-08-02-09-23-34-734;undefined;https://lycee-champollion.fr is down... :'( It didn't contain fgfhhfgghjcvbnxckcvghsddfjhvzxkjhhg
+2021-08-02-09-23-34-734;undefined;https://www.mataf.net/fr/fgdffgffghfghh is down... :'( Error Request failed with status code 404
+2021-08-02-09-39-03-846;mataf_marche;https://www.mataf.net/fr/ghdghd is down... :'( Error Request failed with status code 404
+2021-08-02-09-39-03-846;champo;https://lycee-champollion.fr is down... :'( It didn't contain fgfhhfgghjcvbnxckcvghsddfjhvzxkjhhg
+2021-08-02-09-39-03-846;mataf_marche_pas;https://www.mataf.net/fr/fgdffgffghfghh is down... :'( Error Request failed with status code 404
+2021-08-02-09-40-21-569;mataf_marche;https://www.mataf.net/fr/ghdghd is down... :'( Error Request failed with status code 404
+2021-08-02-09-40-21-570;champo;https://lycee-champollion.fr is down... :'( It didn't contain fgfhhfgghjcvbnxckcvghsddfjhvzxkjhhg
+2021-08-02-09-40-21-570;mataf_marche_pas;https://www.mataf.net/fr/fgdffgffghfghh is down... :'( Error Request failed with status code 404
+2021-08-02-09-43-33-155;mataf_marche;https://www.mataf.net/fr/ghdghd is down... :'( Error Request failed with status code 404
+2021-08-02-09-43-33-156;champo;https://lycee-champollion.fr is down... :'( It didn't contain fgfhhfgghjcvbnxckcvghsddfjhvzxkjhhg
+2021-08-02-09-43-33-157;mataf_marche_pas;https://www.mataf.net/fr/fgdffgffghfghh is down... :'( Error Request failed with status code 404
+2021-08-02-09-48-51-198;mataf_marche;https://www.mataf.net/fr/ghdghd is down... :'( Error Request failed with status code 404
+2021-08-02-09-48-51-199;champo;https://lycee-champollion.fr is down... :'( It didn't contain fgfhhfgghjcvbnxckcvghsddfjhvzxkjhhg
+2021-08-02-09-48-51-199;mataf_marche_pas;https://www.mataf.net/fr/fgdffgffghfghh is down... :'( Error Request failed with status code 404
+2021-08-02-14-21-51-786;mataf_marche;https://www.mataf.net/fr/ghdghd is down... :'( Error Request failed with status code 404
+2021-08-02-14-21-51-787;champo;https://lycee-champollion.fr is down... :'( It didn't contain fgfhhfgghjcvbnxckcvghsddfjhvzxkjhhg
+2021-08-02-14-21-51-787;mataf_marche_pas;https://www.mataf.net/fr/fgdffgffghfghh is down... :'( Error Request failed with status code 404

@@ -1,44 +1,57 @@
 
 const zmq = require('zeromq');
-const fs = require('fs'); 
-const { exec } = require('child_process');
-
 const config = require('./config/config.json');
-const { alert } = require('./util/alert');
-const { getCurrDate } = require('./util/getCurrDate');
+const { alert, logValue } = require('./util/writeLog');
 
-const IPlist = config.IPlist;
+const IPlist = config.zmq;
 let zmqSock = [];
 let nbOfResp = [];
+let errList = [];
+let bash = [];
 
 for(let i = 0; i < IPlist.length; i++) {
+
     zmqSock[i] = zmq.socket('sub');
     zmqSock[i].connect(IPlist[i].IP);
     zmqSock[i].subscribe('');
-    nbOfResp[i] = 0; 
+    nbOfResp[i] = 0;
+    
+    let name = IPlist[i].name;
 
     let timer = setTimeout(() => {
-        alert([`${IPlist[i].IP} took too long to respond ( ͡° ʖ̯ ͡°)`], IPlist[i].IP, 'zmqLog');
-        exec(IPlist[i].bash);
-    },config.time.slowResp);
+        errList.push({
+            message: `${name} took too long to respond ( ͡° ʖ̯ ͡°)`,
+            src: name
+        });
+        bash.push(IPlist[i].bash)
+        // alert({errList: [`${name} took too long to respond ( ͡° ʖ̯ ͡°)`], srcOfError: name, fileName: 'zmqLog', bashToExecute: IPlist[i].bash, sendMail: true});
+    },config.time.zmq.slowResp);
 
     zmqSock[i].on('message', () => {
         nbOfResp[i]++;
         clearTimeout(timer);
         timer = setTimeout(() => {
-            alert([`${IPlist[i].IP} took too long to respond ( ͡° ʖ̯ ͡°)`], IPlist[i].IP, 'zmqLog');
-            exec(IPlist[i].bash);
-        },config.time.slowResp);
+            errList.push({
+                message: `${name} took too long to respond ( ͡° ʖ̯ ͡°)`,
+                src: name
+            });
+            bash.push(IPlist[i].bash)
+            // alert({errList: [`${name} took too long to respond ( ͡° ʖ̯ ͡°)`], srcOfError: name, fileName: 'zmqLog', bashToExecute: IPlist[i].bash, sendMail: true});
+        },config.time.zmq.slowResp);
     });
 }
 
 setInterval(() => {
-    for(let i = 0; i < IPlist.length; i++) {
-        let fileName = IPlist[i].IP.split('/');
-        fileName.shift();
-        fileName.shift();
-        fileName = fileName.join('-').split('.').join('-').split(':').join('-');
-        fs.writeFileSync(`${config.defPath.directoryZmq}/${fileName}.${config.fileConfig.minZmq}.${config.fileConfig.maxZmq}.${config.time.timeout}.txt`, `${getCurrDate()};${nbOfResp[i]}\n`, {flag: 'a'});
+
+    for (let i = 0; i < IPlist.length; i++) {
+        logValue({pathToDir: config.defPath.directoryZmq, fileName: IPlist[i].name, valueMin: config.fileConfig.minZmq, valueMax: config.fileConfig.maxZmq, refreshRate: config.time.zmq.refresh/1000, value: nbOfResp[i]});
         nbOfResp[i] = 0;
     }
-}, config.time.refresh);
+
+    if (errList.length > 0) {
+        alert({errList: errList, fileName: 'zmqLog', bashToExecute: bash, sendMail: true});
+        errList = [];
+        bash = [];
+    }
+
+}, config.time.zmq.refresh);
