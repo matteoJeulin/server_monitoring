@@ -72,7 +72,7 @@ function drawGraph(id, data) {
     let x = graph.clientWidth;
     let y = graph.clientHeight;
     c.lineWidth = 1;
-    c.strokeStyle = '#333';
+    c.strokeStyle = '#CCCCCC88';
     c.font = 'italic 8pt sans-serif';
     c.textAlign = "center";
     

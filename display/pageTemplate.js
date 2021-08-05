@@ -17,9 +17,12 @@ const pageTemplate = (title, body) => {
                 }
                 .txt{
                     position: absolute;
-                    top: 1px;
-                    left: 1px;
-                    color: #FFF;
+                    top: 3px;
+                    left: 3px;
+                    font-size: 0.8em;
+                    font-weight: bold;
+                    background: #00000055;
+                    padding: 2px;
                 }
                 .container{
                     display: flex;
@@ -35,16 +38,20 @@ const pageTemplate = (title, body) => {
                     display:none;
                 }
                 .box-0{
-                    background-color: #002080;
+                    background-color: #876110;
+                    color: #FFF;
                 }
                 .box-1{
-                    background-color: #2eb82e;
+                    background-color: #2E832B;
+                    color: #FFF;
                 }
                 .box-2{
-                    background-color: #e60000;
+                    background-color: #AD4055;
+                    color: #FFF;
                 }
                 .box-3{
                     background-color: #333333;
+                    color: #FFF;
                 }
             </style>
 

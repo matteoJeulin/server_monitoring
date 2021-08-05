@@ -73,6 +73,12 @@
         "refresh": 60000,
         "slowResp": 15000,
         "timeout": 30000
+    },
+    "login": {
+        "refresh": 60000,
+        "slowResp": 15000,
+        "timeout": 30000,
+        "emailDelay": 120000
     }
 },
 "fileConfig" :{
@@ -106,4 +112,29 @@
         "bash": "any shell command",
         "name": "whatever_name_you_want"
     }
-]}
+],
+"login": {
+    "post": "https://www.thewebsiteyouwanttopostto.com",
+    "parameters": 
+        {
+            "email": "your.testing@emailaddress.com",
+            "name": "username",
+            "password": "password",
+            "ok-privacy": 1
+        },
+    "logFile": "logFileName",
+    "errSource": "the name of your error source",
+    "message": "message you want to search for",
+    "bashToExecute": "bash command",
+    "installed":
+        {
+            "client_id":"googleapi",
+            "project_id":"googleapi",
+            "auth_uri":"googleapi",
+            "token_uri":"googleapi",
+            "auth_provider_x509_cert_url":"googleapi",
+            "client_secret":"googleapi",
+            "redirect_uris":["googleapi"],
+            "javascript_origins":["googleapi"]
+        }
+    }}

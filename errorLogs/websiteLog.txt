@@ -34,3 +34,27 @@
 2021-08-02-14-21-51-786;mataf_marche;https://www.mataf.net/fr/ghdghd is down... :'( Error Request failed with status code 404
 2021-08-02-14-21-51-787;champo;https://lycee-champollion.fr is down... :'( It didn't contain fgfhhfgghjcvbnxckcvghsddfjhvzxkjhhg
 2021-08-02-14-21-51-787;mataf_marche_pas;https://www.mataf.net/fr/fgdffgffghfghh is down... :'( Error Request failed with status code 404
+2021-08-05-12-14-23-932;mataf login;There was an error while creating the account: Error 3
+2021-08-05-12-30-32-572;mataf login;There was an error while creating the account: Error 3
+2021-08-05-12-37-56-880;mataf login;There was an error while creating the account: Error 3
+2021-08-05-12-39-56-245;mataf login;There was an error while creating the account: Error 3
+2021-08-05-12-41-56-690;mataf login;There was an error while creating the account: Error 3
+2021-08-05-12-46-17-405;mataf login;There was an error while creating the account: Error 3
+2021-08-05-12-53-24-327;mataf login;There was an error while creating the account: Error 3
+2021-08-05-13-07-52-557;mataf login;There was an error while creating the account: Error 3
+2021-08-05-13-09-52-854;mataf login;There was an error while creating the account: Error 3
+2021-08-05-13-11-53-473;mataf login;There was an error while creating the account: Error 3
+2021-08-05-13-17-55-808;mataf login;There was an error while creating the account: Error 3
+2021-08-05-13-25-10-818;mataf login;There was an error while creating the account: Error 3
+2021-08-05-13-27-12-583;mataf login;There was an error while creating the account: Error 3
+2021-08-05-13-29-12-366;mataf login;There was an error while creating the account: Error 3
+2021-08-05-13-32-27-373;mataf login;There was an error while creating the account: Error 3
+2021-08-05-13-34-27-442;mataf login;There was an error while creating the account: Error 3
+2021-08-05-13-36-26-221;mataf login;There was an error while creating the account: Error 3
+2021-08-05-13-38-26-423;mataf login;There was an error while creating the account: Error 3
+2021-08-05-13-40-26-487;mataf login;There was an error while creating the account: Error 3
+2021-08-05-13-55-45-774;mataf login;There was an error while creating the account: Error 7
+2021-08-05-14-07-46-779;mataf login;There was an error while creating the account: Error 7
+2021-08-05-14-13-40-374;mataf login;There was an error while creating the account: Error 7
+2021-08-05-14-17-34-168;mataf login;There was an error while creating the account: Error 3
+2021-08-05-14-42-38-991;mataf login;There was an error while creating the account: Error 3

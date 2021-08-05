@@ -3,13 +3,13 @@ const { default: axios } = require("axios");
 const { getDelay } = require("./getDelay");
 const config = require('../config/config.json');
 
-function checkActivity(site) {
+function checkActivity(site, log = true) {
 
     return new Promise((resolve, reject) => {
         let time = Date.now();
         axios.get(site.site, {timeout: config.time.site.timeout})
         .then((response) => {
-            getDelay(time, site.name);
+            if(log) getDelay(time, site.name);
             if (!response.data.includes(site.message) || response.status !== 200) {
                 reject({
                     url: site.site,
@@ -20,7 +20,7 @@ function checkActivity(site) {
             resolve(site.name);
         })
         .catch((e) => {
-            getDelay(time, site.name);
+            if(log) getDelay(time, site.name);
             reject({
                 url: site.site,
                 name: site.name,

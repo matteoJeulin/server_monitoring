@@ -1,5 +1,8 @@
 config/config.json
-public/test.html
+config/token.json
+test/
+
+
 
 # Logs
 logs

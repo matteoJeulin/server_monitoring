@@ -19,16 +19,16 @@ function displayBoxes(object, directory) {
             let shortPath = shortenPath(filePath, directory);
 
 
-            let path = shortPath.split('/');
+            let path = shortPath.split(/[/_]/);
             let div = [...path[0]];
 
             for(let i = 1; i< path.length; i++){
-                div.push(`<br>${path[i]}`)
+                div.push(`${path[i]}`);
             }
             div[div.length-1] = div[div.length-1].split('.')[0];
 
-            let pathTxt = div.join('');
-
+            let pathTxt = div.join('<br>');
+            
             let data = getData(filePath);
 
             
