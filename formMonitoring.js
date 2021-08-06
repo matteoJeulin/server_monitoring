@@ -28,44 +28,83 @@ const SCOPES = ['https://www.googleapis.com/auth/gmail.modify'];
 // time.
 const TOKEN_PATH = './config/token.json';
 
-const login = config.login;
-login.errState = 0;
+const signUp = config.signUp;
+signUp.errState = 0;
 
-const defPost = login.parameters;
+const defPost = signUp.parameters;
 
 const defPath = config.defPath.directoryWebsite;
+const login = config.login;
 
-function logForm(errState) {
-  if (errState === NO_ERR) logValue({ pathToDir: defPath, fileName: login.logFile, value: errState, valueMax: 0, valueMin: 0, refreshRate: config.time.site.refresh / 1000 });
-  else {
-    alert({ errList: [{ message: `There was an error while creating the account: Error ${errState}`, src: config.login.errSource }], fileName: 'websiteLog', sendMail: true });
-    logValue({ pathToDir: defPath, fileName: login.logFile, value: errState, valueMax: 0, valueMin: 0, refreshRate: config.time.site.refresh / 1000 });
-  }
-}
+let paramsPass = new url.URLSearchParams(login.parameters.email);
 
+let paramsLogin = new url.URLSearchParams(login.parameters);
 
 setInterval(() => {
-  let post = {...defPost};
-  
+  let post = { ...defPost };
+
   post.email = post.email.replace('{var}', `xx-${Math.floor(Date.now() / 1000)}`);
   post.name = Math.floor(Date.now() / 1000);
-  
+
   let params = new url.URLSearchParams(post);
 
-  axios.post(login.post, params.toString())
+  axios.post(signUp.post, params.toString())
     .then(() => {
       setTimeout(() => {
-        authorize(login, post.email,listMessages);
+        authorize(signUp, post.email, listMessages, true, signUp.logFile);
+        exec(signUp.bashToExecute);
+      }, config.time.signUp.timeout);
+    })
+    .catch((err) => {
+      logForm(ERR_CREATE, signUp.logFile);
+    });
+
+
+  axios.post(login.forgotPass, paramsPass.toString())
+    .then(() => {
+      setTimeout(() => {
+        authorize(signUp, login.parameters.email, listMessages, false, login.newPassFile);
         exec(login.bashToExecute);
       }, config.time.login.timeout);
     })
     .catch((err) => {
-      logForm(ERR_CREATE);
-      alert({ errList: [{ message: err.message, src: config.login.errSource }], fileName: 'websiteLog', sendMail: true });
+      logForm(ERR_CREATE, login.newPassFile);
     });
 
-}, config.time.login.refresh);
 
+  axios.post(login.post, paramsLogin.toString(), {
+    maxRedirects: 0,
+    validateStatus: function (status) {
+      return status === 301; // Resolve only if the status code is less than 500
+    }
+  })
+    .then((response) => {
+      let accountLogged = false;
+      for (let i = 0; i < response.headers['set-cookie'].length; i++) {
+        if (response.headers['set-cookie'][i].split('=')[0] === login.splitText) {
+          accountLogged = true;
+          logForm(NO_ERR, login.logFile);
+          return;
+        }
+      }
+      if (!accountLogged) throw ({ message: ERR_LOGIN });
+    })
+    .catch((err) => {
+      logForm(err.message, login.logFile);
+    });
+
+}, config.time.signUp.refresh);
+
+
+
+function logForm(errState, logFile) {
+  console.log(errState);
+  if (errState === NO_ERR) logValue({ pathToDir: defPath, fileName: logFile, value: errState, valueMax: 0, valueMin: 0, refreshRate: config.time.site.refresh / 1000 });
+  else {
+    alert({ errList: [{ message: `Error ${errState} (*TーT)b`, src: config.signUp.errSource }], fileName: 'websiteLog', sendMail: true });
+    logValue({ pathToDir: defPath, fileName: logFile, value: errState, valueMax: 0, valueMin: 0, refreshRate: config.time.site.refresh / 1000 });
+  }
+}
 
 /**
  * Get and store new token after prompting for user authorization, and then
@@ -103,23 +142,23 @@ function getNewToken(oAuth2Client, callback) {
  * @param {Object} credentials The authorization client credentials.
  * @param {function} callback The callback to call with the authorized client.
  */
-function authorize(credentials, mail, callback) {
+function authorize(credentials, mail, callback, accessSite, logFile) {
   const { client_secret, client_id, redirect_uris } = credentials.installed;
   const oAuth2Client = new google.auth.OAuth2(
     client_id, client_secret, redirect_uris[0]);
   fs.readFile(TOKEN_PATH, (err, token) => {
     if (err) {
-      logForm(ERR_MAIL_AUTH);
+      logForm(ERR_MAIL_AUTH, logFile);
       return getNewToken(oAuth2Client, callback);
     }
     oAuth2Client.setCredentials(JSON.parse(token));
-    callback(oAuth2Client, mail);
+    callback(oAuth2Client, mail, accessSite, logFile);
   });
 }
 
 
-function listMessages(auth, mail) {
-  let timestamp = Math.floor((Date.now() - config.time.login.emailDelay) / 1000);
+function listMessages(auth, mail, accessSite, logFile) {
+  let timestamp = Math.floor((Date.now() - config.time.signUp.emailDelay) / 1000);
   let query = `to:${mail} after: ${timestamp}`;
   const gmail = google.gmail({ version: 'v1', auth });
   gmail.users.messages.list(
@@ -130,72 +169,80 @@ function listMessages(auth, mail) {
     },
     (err, res) => {
       if (err) {
-        logForm(ERR_MSG_LIST);
+        logForm(ERR_MSG_LIST, logFile);
         return;
       }
       if (!res.data.messages) {
-        logForm(ERR_MAIL_RECEIVED);
+        logForm(ERR_MAIL_RECEIVED, logFile);
         return;
       }
-      getMail(res.data.messages[0].id, auth, handleBody);
+      if (accessSite) getMail(res.data.messages[0].id, auth, handleBody, logFile);
+      else {
+        console.log('dont continue');
+        gmail.users.messages.trash({
+          userId: 'me',
+          id: res.data.messages[0].id
+        });
+        if (!err) logForm(NO_ERR, logFile);
+      }
     }
   );
 }
 
-function getMail(msgId, auth, callback) {
+function getMail(msgId, auth, callback, logFile) {
   const gmail = google.gmail({ version: 'v1', auth });
   gmail.users.messages.get({
     userId: 'me',
-    id: msgId,
+    id: msgId
   }, (err, res) => {
     if (!err) {
       if (res.data.payload.body.size > 0) {
         let body = res.data.payload.body.data;
 
-        callback(base64.decode(body.replace(/-/g, '+').replace(/_/g, '/')), checkActivity);
+        callback(base64.decode(body.replace(/-/g, '+').replace(/_/g, '/')), checkActivity, logFile);
         gmail.users.messages.trash({
           userId: 'me',
-          id: msgId,
+          id: msgId
         });
       }
       else if (res.data.payload.parts) {
         let body = res.data.payload.parts[0].body.data;
 
-        callback(base64.decode(body.replace(/-/g, '+').replace(/_/g, '/')), checkActivity);
+        callback(base64.decode(body.replace(/-/g, '+').replace(/_/g, '/')), checkActivity, logFile);
         gmail.users.messages.trash({
           userId: 'me',
-          id: msgId,
+          id: msgId
         });
       }
     }
     else {
-      logForm(ERR_READ_MAIL);
+      logForm(ERR_READ_MAIL, logFile);
     }
   });
 }
 
-function handleBody(body, callback) {
+function handleBody(body, callback, logFile) {
   let url = '';
   if (body.includes('<span id="link-account">')) {
     url = body.split('<span id="link-account">')[1].split('</span>')[0];
   }
   else {
-    logForm(ERR_MESSAGE_IN_MAIL);
+    logForm(ERR_MESSAGE_IN_MAIL, logFile);
     return;
   }
   let site = {
     site: url,
-    name: login.logFile,
-    message: login.message
+    name: signUp.logFile,
+    message: signUp.message
   }
   let promiseArray = [callback(site, false)];
   Promise.allSettled(promiseArray)
     .then((data) => {
       mailState = true;
-      if (data[0].status !== 'fulfilled') logForm(ERR_SITE_PING);
-      else logForm(NO_ERR)
+      if (data[0].status !== 'fulfilled') logForm(ERR_SITE_PING, logFile);
+      else logForm(NO_ERR, logFile);
     })
     .catch((err) => {
-      logForm(ERR_LOGIN);
+      logForm(ERR_LOGIN, logFile);
     });
 }

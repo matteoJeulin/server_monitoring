@@ -79,6 +79,16 @@
         "slowResp": 15000,
         "timeout": 30000,
         "emailDelay": 120000
+    },
+    "connection": {
+        "refresh": 60000,
+        "slowResp": 15000,
+        "timeout": 30000
+    },
+    "signUp": {
+        "refresh": 60000,
+        "slowResp": 15000,
+        "timeout": 30000
     }
 },
 "fileConfig" :{
@@ -113,7 +123,7 @@
         "name": "whatever_name_you_want"
     }
 ],
-"login": {
+"signUp": {
     "post": "https://www.thewebsiteyouwanttopostto.com",
     "parameters": 
         {
@@ -148,5 +158,18 @@
     "query": "ANY MYSQL QUERY YOU WANT",
     "bash": "any shell command",
     "name": "whatever_name_you_want"
+},
+"login": {
+    "post": "https://www.thesiteyouwanttopostto.com",
+    "forgotPass": "https://www.thelinktoyourforgotpasspage.com",
+    "parameters": {
+        "email": "test.email@domain.com",
+        "password": "password"
+    },
+    "bashToExecute":"any shell command",
+    "errSource":"the source for your errors",
+    "logFile": "log file for logins",
+    "newPassFile": "log file for forget password",
+    "splitText": "text used to split when checking cookies for login"
 }
 }
