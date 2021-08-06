@@ -24,7 +24,7 @@ function checkColor(max, min, value, refreshRate, date) {
         }
         let now = new Date(); 
           
-        if ((now.getTime() - time.getTime())/1000 > (60 + refreshRate)) {
+        if ((now.getTime() - time.getTime())/1000 > (2 * refreshRate) + 60) {
             txtColor = 3;
         }
     }
