@@ -94,7 +94,7 @@
         "bash": "any shell command",
         "name": "whatever_name_you_want"
     }
-],"connections" : [
+],"database" : [
     {
         "host": "0.0.0.0",
         "port": "3000",
@@ -106,7 +106,7 @@
         "name": "whatever_name_you_want"
     }
 ],
-"IPlist" : [
+"zmq" : [
     {
         "IP":"http://0.0.0.0:3000",
         "bash": "any shell command",
@@ -137,4 +137,16 @@
             "redirect_uris":["googleapi"],
             "javascript_origins":["googleapi"]
         }
-    }}
+},
+"connection": 
+{
+    "host": "0.0.0.0",
+    "port": "3000",
+    "user": "username",
+    "password": "password",
+    "database": "databasename",
+    "query": "ANY MYSQL QUERY YOU WANT",
+    "bash": "any shell command",
+    "name": "whatever_name_you_want"
+}
+}
