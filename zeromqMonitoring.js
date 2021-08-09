@@ -9,13 +9,28 @@ let nbOfResp = [];
 let errList = [];
 let bash = [];
 
-for(let i = 0; i < IPlist.length; i++) {
+function checkZmq() {
+
+    for (let i = 0; i < IPlist.length; i++) {
+        logValue({ pathToDir: config.defPath.directoryZmq, fileName: IPlist[i].name, valueMin: config.fileConfig.minZmq, valueMax: config.fileConfig.maxZmq, refreshRate: config.time.zmq.refresh / 1000, value: nbOfResp[i] });
+        nbOfResp[i] = 0;
+    }
+
+    if (errList.length > 0) {
+        alert({ errList: errList, fileName: 'zmqLog', bashToExecute: bash, sendMail: true });
+        errList = [];
+        bash = [];
+    }
+
+}
+
+for (let i = 0; i < IPlist.length; i++) {
 
     zmqSock[i] = zmq.socket('sub');
     zmqSock[i].connect(IPlist[i].IP);
     zmqSock[i].subscribe('');
     nbOfResp[i] = 0;
-    
+
     let name = IPlist[i].name;
 
     let timer = setTimeout(() => {
@@ -25,7 +40,7 @@ for(let i = 0; i < IPlist.length; i++) {
         });
         bash.push(IPlist[i].bash)
         // alert({errList: [`${name} took too long to respond ( ͡° ʖ̯ ͡°)`], srcOfError: name, fileName: 'zmqLog', bashToExecute: IPlist[i].bash, sendMail: true});
-    },config.time.zmq.slowResp);
+    }, config.time.zmq.slowResp);
 
     zmqSock[i].on('message', () => {
         nbOfResp[i]++;
@@ -37,21 +52,9 @@ for(let i = 0; i < IPlist.length; i++) {
             });
             bash.push(IPlist[i].bash)
             // alert({errList: [`${name} took too long to respond ( ͡° ʖ̯ ͡°)`], srcOfError: name, fileName: 'zmqLog', bashToExecute: IPlist[i].bash, sendMail: true});
-        },config.time.zmq.slowResp);
+        }, config.time.zmq.slowResp);
     });
 }
 
-setInterval(() => {
-
-    for (let i = 0; i < IPlist.length; i++) {
-        logValue({pathToDir: config.defPath.directoryZmq, fileName: IPlist[i].name, valueMin: config.fileConfig.minZmq, valueMax: config.fileConfig.maxZmq, refreshRate: config.time.zmq.refresh/1000, value: nbOfResp[i]});
-        nbOfResp[i] = 0;
-    }
-
-    if (errList.length > 0) {
-        alert({errList: errList, fileName: 'zmqLog', bashToExecute: bash, sendMail: true});
-        errList = [];
-        bash = [];
-    }
-
-}, config.time.zmq.refresh);
+setInterval(checkZmq, config.time.zmq.refresh);
+checkZmq();

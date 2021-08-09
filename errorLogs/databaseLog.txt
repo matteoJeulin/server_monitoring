@@ -20,3 +20,11 @@
 2021-07-30-09-23-08-202;192.168.51.13_cool;192.168.51.13_cool is not responding
 2021-07-30-09-23-08-205;cool2;Error for cool2: connect ETIMEDOUT
 2021-07-30-09-23-08-206;192.168.51.13_cool2;192.168.51.13_cool2 is not responding
+2021-08-09-14-08-12-988;connectionTion;Error for connectionTion: No response
+2021-08-09-14-08-12-994;coolMan;Error for coolMan: No response
+2021-08-09-14-09-12-888;connectionTion;Error for connectionTion: No response
+2021-08-09-14-09-12-893;coolMan;Error for coolMan: No response
+2021-08-09-14-10-12-903;connectionTion;Error for connectionTion: No response
+2021-08-09-14-10-12-906;coolMan;Error for coolMan: No response
+2021-08-09-14-11-42-472;coolMan;Error for coolMan: connect ETIMEDOUT
+2021-08-09-14-11-42-483;coolDude;Error for coolDude: connect ETIMEDOUT

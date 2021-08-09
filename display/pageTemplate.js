@@ -15,6 +15,13 @@ const pageTemplate = (title, body) => {
                     overflow:hidden;
                     background:#2eb82e;
                 }
+                .link{
+                    font-size: 25px;
+                    font-weight: bold;
+                    text-decoration: none;
+                    background: #60000055;
+                    color: #000000;
+                }
                 .txt{
                     position: absolute;
                     top: 3px;
@@ -84,4 +91,3 @@ const pageTemplate = (title, body) => {
 module.exports = {pageTemplate};
 
 
-module.exports = {pageTemplate};

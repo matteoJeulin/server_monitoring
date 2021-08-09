@@ -11,7 +11,16 @@ const graphTemplate = (data, body) => {
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta http-equiv="Refresh" content="60">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title></title>
+        <title>Graph</title>
+        <style>
+            .link{
+                font-size: 25px;
+                font-weight: bold;
+                text-decoration: none;
+                background: #60000055;
+                color: #000000;
+            }
+        </style>
     </head>
     <body>
         <canvas id="graph">   

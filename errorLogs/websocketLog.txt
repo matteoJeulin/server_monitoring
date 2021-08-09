@@ -47,3 +47,6 @@
 2021-07-30-12-38-00-812;http://217.182.81.208:3001;Connected to http://217.182.81.208:3001, stream: EURUSD
 2021-07-30-12-38-00-850;http://217.182.80.111:3001;Connected to http://217.182.80.111:3001, stream: EUR
 2021-07-30-12-38-00-995;https://www.mataf.io;Connected to https://www.mataf.io, stream: USD
+2021-08-09-14-15-30-543;mataf_EURUSD;Connected to mataf_EURUSD, stream: EURUSD
+2021-08-09-14-15-30-547;mataf_EUR;Connected to mataf_EUR, stream: EUR
+2021-08-09-14-15-30-772;mataf_USD;Connected to mataf_USD, stream: USD

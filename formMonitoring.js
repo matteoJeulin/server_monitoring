@@ -36,11 +36,32 @@ const defPost = signUp.parameters;
 const defPath = config.defPath.directoryWebsite;
 const login = config.login;
 
-let paramsPass = new url.URLSearchParams(login.parameters.email);
-
 let paramsLogin = new url.URLSearchParams(login.parameters);
 
-setInterval(() => {
+function checkLogin() {
+  axios.post(login.post, paramsLogin.toString(), {
+    maxRedirects: 0,
+    validateStatus: function (status) {
+      return status === 301;
+    }
+  })
+    .then((response) => {
+      let accountLogged = false;
+      for (let i = 0; i < response.headers['set-cookie'].length; i++) {
+        if (response.headers['set-cookie'][i].split('=')[0] === login.splitText) {
+          accountLogged = true;
+          logForm(NO_ERR, login.logFile);
+          return;
+        }
+      }
+      if (!accountLogged) throw ({ message: ERR_LOGIN });
+    })
+    .catch((err) => {
+      logForm(err.message, login.logFile, config.time.login.refresh);
+    });
+}
+
+function checkSignup() {
   let post = { ...defPost };
 
   post.email = post.email.replace('{var}', `xx-${Math.floor(Date.now() / 1000)}`);
@@ -56,11 +77,12 @@ setInterval(() => {
       }, config.time.signUp.timeout);
     })
     .catch((err) => {
-      logForm(ERR_CREATE, signUp.logFile);
+      logForm(ERR_CREATE, signUp.logFile, config.time.signUp.refresh);
     });
+}
 
-
-  axios.post(login.forgotPass, paramsPass.toString())
+function checkPassword() {
+  axios.post(login.forgotPass, paramsLogin.toString())
     .then(() => {
       setTimeout(() => {
         authorize(signUp, login.parameters.email, listMessages, false, login.newPassFile);
@@ -68,41 +90,23 @@ setInterval(() => {
       }, config.time.login.timeout);
     })
     .catch((err) => {
-      logForm(ERR_CREATE, login.newPassFile);
+      logForm(ERR_CREATE, login.newPassFile, config.time.password.refresh);
     });
+}
+
+setInterval(checkSignup, config.time.signUp.refresh);
+setInterval(checkLogin, config.time.login.refresh);
+setInterval(checkPassword, config.time.password.refresh);
+checkSignup();
+checkPassword();
+checkLogin();
 
 
-  axios.post(login.post, paramsLogin.toString(), {
-    maxRedirects: 0,
-    validateStatus: function (status) {
-      return status === 301; // Resolve only if the status code is less than 500
-    }
-  })
-    .then((response) => {
-      let accountLogged = false;
-      for (let i = 0; i < response.headers['set-cookie'].length; i++) {
-        if (response.headers['set-cookie'][i].split('=')[0] === login.splitText) {
-          accountLogged = true;
-          logForm(NO_ERR, login.logFile);
-          return;
-        }
-      }
-      if (!accountLogged) throw ({ message: ERR_LOGIN });
-    })
-    .catch((err) => {
-      logForm(err.message, login.logFile);
-    });
-
-}, config.time.signUp.refresh);
-
-
-
-function logForm(errState, logFile) {
-  console.log(errState);
-  if (errState === NO_ERR) logValue({ pathToDir: defPath, fileName: logFile, value: errState, valueMax: 0, valueMin: 0, refreshRate: config.time.site.refresh / 1000 });
+function logForm(errState, logFile, refresh) {
+  if (errState === NO_ERR) logValue({ pathToDir: defPath, fileName: logFile, value: errState, valueMax: 0, valueMin: 0, refreshRate: refresh });
   else {
     alert({ errList: [{ message: `Error ${errState} (*TーT)b`, src: config.signUp.errSource }], fileName: 'websiteLog', sendMail: true });
-    logValue({ pathToDir: defPath, fileName: logFile, value: errState, valueMax: 0, valueMin: 0, refreshRate: config.time.site.refresh / 1000 });
+    logValue({ pathToDir: defPath, fileName: logFile, value: errState, valueMax: 0, valueMin: 0, refreshRate: refresh });
   }
 }
 
@@ -142,22 +146,22 @@ function getNewToken(oAuth2Client, callback) {
  * @param {Object} credentials The authorization client credentials.
  * @param {function} callback The callback to call with the authorized client.
  */
-function authorize(credentials, mail, callback, accessSite, logFile) {
+function authorize(credentials, mail, callback, accessSite, logFile, refresh) {
   const { client_secret, client_id, redirect_uris } = credentials.installed;
   const oAuth2Client = new google.auth.OAuth2(
     client_id, client_secret, redirect_uris[0]);
   fs.readFile(TOKEN_PATH, (err, token) => {
     if (err) {
-      logForm(ERR_MAIL_AUTH, logFile);
+      logForm(ERR_MAIL_AUTH, logFile, refresh);
       return getNewToken(oAuth2Client, callback);
     }
     oAuth2Client.setCredentials(JSON.parse(token));
-    callback(oAuth2Client, mail, accessSite, logFile);
+    callback(oAuth2Client, mail, accessSite, logFile, refresh);
   });
 }
 
 
-function listMessages(auth, mail, accessSite, logFile) {
+function listMessages(auth, mail, accessSite, logFile, refresh) {
   let timestamp = Math.floor((Date.now() - config.time.signUp.emailDelay) / 1000);
   let query = `to:${mail} after: ${timestamp}`;
   const gmail = google.gmail({ version: 'v1', auth });
@@ -169,27 +173,26 @@ function listMessages(auth, mail, accessSite, logFile) {
     },
     (err, res) => {
       if (err) {
-        logForm(ERR_MSG_LIST, logFile);
+        logForm(ERR_MSG_LIST, logFile, refresh);
         return;
       }
       if (!res.data.messages) {
-        logForm(ERR_MAIL_RECEIVED, logFile);
+        logForm(ERR_MAIL_RECEIVED, logFile, refresh);
         return;
       }
-      if (accessSite) getMail(res.data.messages[0].id, auth, handleBody, logFile);
+      if (accessSite) getMail(res.data.messages[0].id, auth, handleBody, logFile, refresh);
       else {
-        console.log('dont continue');
-        gmail.users.messages.trash({
-          userId: 'me',
-          id: res.data.messages[0].id
-        });
-        if (!err) logForm(NO_ERR, logFile);
+        if (!err) logForm(NO_ERR, logFile, refresh);
       }
+      gmail.users.messages.trash({
+        userId: 'me',
+        id: res.data.messages[0].id
+      });
     }
   );
 }
 
-function getMail(msgId, auth, callback, logFile) {
+function getMail(msgId, auth, callback, logFile, refresh) {
   const gmail = google.gmail({ version: 'v1', auth });
   gmail.users.messages.get({
     userId: 'me',
@@ -199,7 +202,7 @@ function getMail(msgId, auth, callback, logFile) {
       if (res.data.payload.body.size > 0) {
         let body = res.data.payload.body.data;
 
-        callback(base64.decode(body.replace(/-/g, '+').replace(/_/g, '/')), checkActivity, logFile);
+        callback(base64.decode(body.replace(/-/g, '+').replace(/_/g, '/')), checkActivity, logFile, refresh);
         gmail.users.messages.trash({
           userId: 'me',
           id: msgId
@@ -208,7 +211,7 @@ function getMail(msgId, auth, callback, logFile) {
       else if (res.data.payload.parts) {
         let body = res.data.payload.parts[0].body.data;
 
-        callback(base64.decode(body.replace(/-/g, '+').replace(/_/g, '/')), checkActivity, logFile);
+        callback(base64.decode(body.replace(/-/g, '+').replace(/_/g, '/')), checkActivity, logFile, refresh);
         gmail.users.messages.trash({
           userId: 'me',
           id: msgId
@@ -216,18 +219,18 @@ function getMail(msgId, auth, callback, logFile) {
       }
     }
     else {
-      logForm(ERR_READ_MAIL, logFile);
+      logForm(ERR_READ_MAIL, logFile, refresh);
     }
   });
 }
 
-function handleBody(body, callback, logFile) {
+function handleBody(body, callback, logFile, refresh) {
   let url = '';
   if (body.includes('<span id="link-account">')) {
     url = body.split('<span id="link-account">')[1].split('</span>')[0];
   }
   else {
-    logForm(ERR_MESSAGE_IN_MAIL, logFile);
+    logForm(ERR_MESSAGE_IN_MAIL, logFile, refresh);
     return;
   }
   let site = {
@@ -239,10 +242,10 @@ function handleBody(body, callback, logFile) {
   Promise.allSettled(promiseArray)
     .then((data) => {
       mailState = true;
-      if (data[0].status !== 'fulfilled') logForm(ERR_SITE_PING, logFile);
-      else logForm(NO_ERR, logFile);
+      if (data[0].status !== 'fulfilled') logForm(ERR_SITE_PING, logFile, refresh);
+      else logForm(NO_ERR, logFile, refresh, refresh);
     })
     .catch((err) => {
-      logForm(ERR_LOGIN, logFile);
+      logForm(ERR_LOGIN, logFile, refresh);
     });
 }

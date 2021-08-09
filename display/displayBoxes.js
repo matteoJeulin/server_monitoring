@@ -4,40 +4,52 @@ const { getDate } = require("../srcServer/get/getDate");
 const { getValue } = require("../srcServer/get/getValue");
 const { shortenPath } = require("../srcServer/modify/shortenPath");
 const { boxes } = require("./boxes");
-const config = require('../config/config.json');
+const { selectTime } = require("../util/selectTime");
 
-function displayBoxes(object, directory) {
+
+function displayBoxes(object, directory, date, delta) {
     let output = [];
-    // output.push('<div class="container">');
-    let j = 0;
+    let value = 0;
+    let dateFile = '';
+    let data = [];
 
     for (keys in object) {
         for (let i = 0; i < object[keys].length; i++) {
             let filePath = object[keys][i].path;
-            let value = getValue(filePath);
-            let date = getDate(filePath);
+            if (date && delta) {
+                data = selectTime(filePath, date, delta);
+                if (data.length > 0) {
+                    value = data[data.length - 1][1];
+                    dateFile = data[data.length - 1][0];
+                }
+                else data.push({
+                    date: 'No values at this date',
+                    value: 0
+                })
+            }
+            else {
+                data = getData(filePath);
+                value = getValue(filePath);
+                dateFile = getDate(filePath);
+            }
             let shortPath = shortenPath(filePath, directory);
 
 
             let path = shortPath.split(/[/_]/);
             let div = [...path[0]];
 
-            for(let i = 1; i< path.length; i++){
+            for (let i = 1; i < path.length; i++) {
                 div.push(`${path[i]}`);
             }
-            div[div.length-1] = div[div.length-1].split('.')[0];
+            div[div.length - 1] = div[div.length - 1].split('.')[0];
 
             let pathTxt = div.join('<br>');
-            
-            let data = getData(filePath);
 
-            
-            output.push(boxes(checkColor(object[keys][i].max,object[keys][i].min,value,object[keys][i].refreshRate,date), object[keys][i].id, filePath, pathTxt, data));
-            j++;
+            output.push(boxes(checkColor(object[keys][i].max, object[keys][i].min, value, object[keys][i].refreshRate, dateFile), object[keys][i].id, filePath, pathTxt, data, date, delta));
         }
     }
-    // output.push('</div>');
+
     return output.join('');
 }
 
-module.exports = {displayBoxes};
+module.exports = { displayBoxes };

@@ -10,16 +10,17 @@ for(let i = 0; i < connections.length; i++) {
     connections[i].errStatus = 0;
 }
 
-setInterval(() => {
-
-
+function checkConnection() {
     for (let i = 0; i < connections.length; i++) {
 
         const connection = mysql.createConnection(connections[i]);
         connection.connect();
         
         connection.query(connections[i].query, (err, results) => {
-            let value = results[0][connections[i].query.split(' ')[1]];
+            if (!results && connections[i].errStatus === 0) {
+                connections[i].errStatus = 1;
+                alert({fileName: 'databaseLog', errList:[{message: `Error for ${connections[i].name}: No response`, src: `${connections[i].name}`}], sendMail: true});
+            }
             if(err && connections[i].errStatus === 0) {
                 connections[i].errStatus = 1;
                 alert({fileName: 'databaseLog', errList:[{message: `Error for ${connections[i].name}: ${err.message}`, src: `${connections[i].name}`}], sendMail: true});
@@ -27,8 +28,9 @@ setInterval(() => {
             else {
                 connections[i].errStatus = 0;
             }
-
+            
             if(results !== undefined){
+                let value = results[0][connections[i].query.split(' ')[1]];
                 logValue({pathToDir: defPath, fileName: connections[i].name, value: value, valueMin: 0, valueMax: config.time.database.slowResp, refreshRate: config.time.database.refresh/1000})
             }
         });
@@ -36,5 +38,7 @@ setInterval(() => {
         connection.end();
     }
 
+}
 
-}, config.time.database.refresh);
+setInterval(checkConnection, config.time.database.refresh);
+checkConnection();
