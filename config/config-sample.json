@@ -74,21 +74,26 @@
         "slowResp": 15000,
         "timeout": 30000
     },
+    "connection": {
+        "refresh": 60000,
+        "slowResp": 15000,
+        "timeout": 30000
+    },
     "login": {
         "refresh": 60000,
         "slowResp": 15000,
         "timeout": 30000,
         "emailDelay": 120000
     },
-    "connection": {
-        "refresh": 60000,
-        "slowResp": 15000,
-        "timeout": 30000
-    },
     "signUp": {
         "refresh": 60000,
         "slowResp": 15000,
         "timeout": 30000
+    },
+    "password": {
+        "refresh": 60000,
+        "slowResp": 15000,
+        "timeout": 60000
     }
 },
 "fileConfig" :{
