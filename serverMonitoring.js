@@ -1,15 +1,12 @@
 
 const { checkErrors } = require('./srcServer/check/checkErrors');
-const { sendEmail } = require('./util/sendEmail');
 const { getDate } = require('./srcServer/get/getDate');
 const { getFolders } = require('./srcServer/get/getFolders');
 const { getValue } = require('./srcServer/get/getValue');
-const fs = require('fs');
 
 const config = require('./config/config.json');
 const { shortenPath } = require('./srcServer/modify/shortenPath');
-const { writeErr } = require('./util/writeErr');
-const { getCurrDate } = require('./util/getCurrDate');
+
 const { alert } = require('./util/writeLog');
 
 const defPath = config.defPath.directoryServer;

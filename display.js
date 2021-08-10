@@ -9,13 +9,10 @@ const { formTemplate } = require('./display/formTemplate');
 
 const { getFolders } = require('./srcServer/get/getFolders');
 
-const { getData } = require('./srcServer/get/getData');
-
 const config = require('./config/config.json');
 
 const http = require('http');
 const fs = require('fs');
-const { file } = require('googleapis/build/src/apis/file');
 const { selectTime } = require('./util/selectTime');
 
 const defPathS = config.defPath.directoryServer;

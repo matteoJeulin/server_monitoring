@@ -1,9 +1,7 @@
 
 const config = require('./config/config.json');
 const fs = require('fs');
-const { exec } = require('child_process');
 
-const { sendEmail } = require('./util/sendEmail');
 const { checkActivity } = require('./srcWebsite/checkActivity');
 const { alert } = require('./util/writeLog');
 

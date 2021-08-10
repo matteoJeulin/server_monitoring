@@ -1,5 +1,5 @@
 
-const {checkColor} = require('./checkColor');
+const { checkColor } = require('./checkColor');
 const { getDate } = require('../srcServer/get/getDate');
 const { getValue } = require('../srcServer/get/getValue');
 
@@ -19,7 +19,7 @@ function displayHome(object) {
             output.push(`
             <li>
                 <a href="?file=${filePath}">
-                    <span style="color:${color[checkColor(object[keys][i].max,object[keys][i].min, value, object[keys][i].refreshRate, date)]}">
+                    <span style="color:${color[checkColor(object[keys][i].max, object[keys][i].min, value, object[keys][i].refreshRate, date)]}">
                         ${object[keys][i].name} : ${date} . . . <b>${value}</b>.
                     </span>
                 </a>
@@ -29,4 +29,4 @@ function displayHome(object) {
     return output.join('');
 }
 
-module.exports = {displayHome};
+module.exports = { displayHome };

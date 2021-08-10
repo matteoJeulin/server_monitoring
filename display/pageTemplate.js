@@ -88,6 +88,6 @@ const pageTemplate = (title, body) => {
 }
 
 
-module.exports = {pageTemplate};
+module.exports = { pageTemplate };
 
 

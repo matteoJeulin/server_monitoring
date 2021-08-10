@@ -1,5 +1,3 @@
-const { getFile } = require("../util/getFile");
-const { splitText } = require("../util/splitText");
 
 const graphTemplate = (data, body) => {
 
@@ -95,4 +93,4 @@ const graphTemplate = (data, body) => {
     </html>`;
 }
 
-module.exports = {graphTemplate};
+module.exports = { graphTemplate };

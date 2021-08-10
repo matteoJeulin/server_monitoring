@@ -6,4 +6,4 @@ function splitName(file) {
     return file
 }
 
-module.exports = {splitName};
+module.exports = { splitName };

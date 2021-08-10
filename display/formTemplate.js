@@ -46,4 +46,4 @@ function formTemplate() {
     </html>`;
 }
 
-module.exports = {formTemplate};
+module.exports = { formTemplate };

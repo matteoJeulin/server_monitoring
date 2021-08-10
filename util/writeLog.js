@@ -1,17 +1,16 @@
 
-const fs =require('fs');
+const fs = require('fs');
 const config = require('../config/config.json');
-const {exec} = require('child_process');
+const { exec } = require('child_process');
 const { getCurrDate } = require('./getCurrDate');
-const {sendEmail} = require('./sendEmail');
-const { checkErrors } = require('../srcServer/check/checkErrors');
+const { sendEmail } = require('./sendEmail');
 
-function logValue({pathToDir, fileName, value, valueMax, valueMin, refreshRate}) {
+function logValue({ pathToDir, fileName, value, valueMax, valueMin, refreshRate }) {
     let pathToFile = `${pathToDir}/${fileName}.${valueMin}.${valueMax}.${refreshRate}.txt`
-    writeLogFile({pathToFile: pathToFile, message: value});
+    writeLogFile({ pathToFile: pathToFile, message: value });
 }
 
-function alert({errList, fileName, sendMail, bashToExecute}){
+function alert({ errList, fileName, sendMail, bashToExecute }) {
     if (sendMail) {
         let errors = [];
         for (let i = 0; i < errList.length; i++) {
@@ -25,16 +24,19 @@ function alert({errList, fileName, sendMail, bashToExecute}){
         }
     }
     for (let i = 0; i < errList.length; i++) {
-        writeLogFile({pathToFile:`${config.defPath.directoryError}/${fileName}.txt`, message: `${errList[i].src};${errList[i].message}`});
+        writeErr({fileName: fileName, text: errList[i].message, src: errList[i].src });
     }
 }
 
-function writeLogFile({pathToFile, message}){
+function writeLogFile({ pathToFile, message }) {
 
-    fs.writeFileSync(pathToFile, `${getCurrDate()};${message}\n`, {flag: 'a'});
+    fs.writeFileSync(pathToFile, `${getCurrDate()};${message}\n`, { flag: 'a' });
+}
 
+function writeErr({ fileName, src, text }) {
+
+    fs.writeFileSync(`${config.defPath.directoryError}/${fileName}`, `${getCurrDate()};${src};${text}\n`, { flag: 'a' });
 }
 
 
-
-module.exports = {alert, logValue};
+module.exports = { alert, logValue };

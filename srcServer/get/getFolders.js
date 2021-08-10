@@ -1,8 +1,6 @@
 
 const { readDirectory } = require('../../util/readDirectory');
 const { shortenPath } = require('../modify/shortenPath');
-const config = require('../../config/config.json');
-
 
 function getFolders(initPath, directory, id, folders = {}, j = 0) {
     let URL = initPath;

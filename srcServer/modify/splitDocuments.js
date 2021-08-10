@@ -1,5 +1,5 @@
 
-const {splitText} = require('./splitText');
+const { splitText } = require('./splitText');
 
 function splitDocuments(txt) {
     let output = [];
@@ -11,4 +11,4 @@ function splitDocuments(txt) {
     return output;
 }
 
-module.exports = {splitDocuments};
+module.exports = { splitDocuments };

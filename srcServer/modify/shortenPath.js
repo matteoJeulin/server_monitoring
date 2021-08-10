@@ -1,4 +1,3 @@
-const config = require('../../config/config.json')
 
 function shortenPath(path, directory) {
     

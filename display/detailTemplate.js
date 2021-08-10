@@ -35,4 +35,4 @@ function detailTemplate(title, body) {
     </html>`;
 }
 
-module.exports = {detailTemplate};
+module.exports = { detailTemplate };

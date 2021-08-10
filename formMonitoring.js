@@ -11,15 +11,53 @@ const base64 = require('js-base64');
 const axios = require('axios');
 const { exec } = require('child_process');
 
-const NO_ERR = 0;
-const ERR_CREATE = 1;
-const ERR_MAIL_AUTH = 2;
-const ERR_MAIL_RECEIVED = 3;
-const ERR_MESSAGE_IN_MAIL = 4;
-const ERR_LOGIN = 5;
-const ERR_MSG_LIST = 6;
-const ERR_SITE_PING = 7;
-const ERR_READ_MAIL = 8;
+const errors = {
+  NO_ERR: {
+    value: 0,
+    text: 'No error'
+  },
+  ERR_CREATE: {
+    value: 1,
+    text: 'Error while creating an account'
+  },
+  ERR_MAIL_AUTH: {
+    value: 2,
+    text: 'Error while getting authentification'
+  },
+  ERR_MAIL_RECEIVED: {
+    value: 3,
+    text: 'Error while reading inbox, no mail received'
+  },
+  ERR_MESSAGE_IN_MAIL: {
+    value: 4,
+    text: 'Error while parsing mail, no link in mail'
+  },
+  ERR_LOGIN: {
+    value: 5,
+    text: 'Error while logging in'
+  },
+  ERR_PASS: {
+    value: 6,
+    text: 'Error while renewing forgotten password'
+  },
+  ERR_SITE_PING: {
+    value: 7,
+    text: 'Error, site page did not contain specified message'
+  },
+  ERR_READ_MAIL: {
+    value: 8,
+    text: 'Error while reading mail'
+  },
+  ERR_RESPONSE: {
+    value: 9,
+    text: 'Error, login page did not have proper response status'
+  },
+  ERR_SITE_CRASH: {
+    value: 10,
+    text: 'Error, site did not respond to ping'
+  }
+}
+
 
 // If modifying these scopes, delete token.json.
 const SCOPES = ['https://www.googleapis.com/auth/gmail.modify'];
@@ -46,18 +84,16 @@ function checkLogin() {
     }
   })
     .then((response) => {
-      let accountLogged = false;
       for (let i = 0; i < response.headers['set-cookie'].length; i++) {
-        if (response.headers['set-cookie'][i].split('=')[0] === login.splitText) {
-          accountLogged = true;
-          logForm(NO_ERR, login.logFile);
+        if (response.headers['set-cookie'][i].split('=')[0] === login.cookieName) {
+          logForm(errors.NO_ERR, login.logFile, config.time.login.refresh);
           return;
         }
       }
-      if (!accountLogged) throw ({ message: ERR_LOGIN });
+      logForm(errors.ERR_LOGIN, login.logFile, config.time.log.refresh);
     })
     .catch((err) => {
-      logForm(err.message, login.logFile, config.time.login.refresh);
+      logForm(errors.ERR_RESPONSE, login.logFile, config.time.login.refresh);
     });
 }
 
@@ -72,12 +108,12 @@ function checkSignup() {
   axios.post(signUp.post, params.toString())
     .then(() => {
       setTimeout(() => {
-        authorize(signUp, post.email, listMessages, true, signUp.logFile);
+        authorize(signUp, post.email, listMessages, true, signUp.logFile, config.time.signUp.refresh);
         exec(signUp.bashToExecute);
-      }, config.time.signUp.timeout);
+      }, config.time.signUp.refresh);
     })
     .catch((err) => {
-      logForm(ERR_CREATE, signUp.logFile, config.time.signUp.refresh);
+      logForm(errors.ERR_CREATE, signUp.logFile, config.time.signUp.refresh);
     });
 }
 
@@ -85,12 +121,12 @@ function checkPassword() {
   axios.post(login.forgotPass, paramsLogin.toString())
     .then(() => {
       setTimeout(() => {
-        authorize(signUp, login.parameters.email, listMessages, false, login.newPassFile);
+        authorize(signUp, login.parameters.email, listMessages, false, login.newPassFile, config.time.password.refresh);
         exec(login.bashToExecute);
-      }, config.time.login.timeout);
+      }, config.time.password.timeout);
     })
     .catch((err) => {
-      logForm(ERR_CREATE, login.newPassFile, config.time.password.refresh);
+      logForm(errors.ERR_PASS, login.newPassFile, config.time.password.refresh);
     });
 }
 
@@ -103,11 +139,11 @@ checkLogin();
 
 
 function logForm(errState, logFile, refresh) {
-  if (errState === NO_ERR) logValue({ pathToDir: defPath, fileName: logFile, value: errState, valueMax: 0, valueMin: 0, refreshRate: refresh });
-  else {
-    alert({ errList: [{ message: `Error ${errState} (*TーT)b`, src: config.signUp.errSource }], fileName: 'websiteLog', sendMail: true });
-    logValue({ pathToDir: defPath, fileName: logFile, value: errState, valueMax: 0, valueMin: 0, refreshRate: refresh });
+  if (errState !== errors.NO_ERR) {
+    alert({ errList: [{ message: errState.text, src: config.signUp.errSource }], fileName: 'websiteLog', sendMail: true });
   }
+  logValue({ pathToDir: defPath, fileName: logFile, value: errState.value, valueMax: 0, valueMin: 0, refreshRate: refresh/1000 });
+
 }
 
 /**
@@ -152,7 +188,7 @@ function authorize(credentials, mail, callback, accessSite, logFile, refresh) {
     client_id, client_secret, redirect_uris[0]);
   fs.readFile(TOKEN_PATH, (err, token) => {
     if (err) {
-      logForm(ERR_MAIL_AUTH, logFile, refresh);
+      logForm(errors.ERR_MAIL_AUTH, logFile, refresh);
       return getNewToken(oAuth2Client, callback);
     }
     oAuth2Client.setCredentials(JSON.parse(token));
@@ -172,24 +208,19 @@ function listMessages(auth, mail, accessSite, logFile, refresh) {
       maxResults: 1
     },
     (err, res) => {
-      if (err) {
-        logForm(ERR_MSG_LIST, logFile, refresh);
-        return;
-      }
-      if (!res.data.messages) {
-        logForm(ERR_MAIL_RECEIVED, logFile, refresh);
+      if (!res.data.messages || err) {
+        logForm(errors.ERR_MAIL_RECEIVED, logFile, refresh);
         return;
       }
       if (accessSite) getMail(res.data.messages[0].id, auth, handleBody, logFile, refresh);
       else {
-        if (!err) logForm(NO_ERR, logFile, refresh);
+        if (!err) logForm(errors.NO_ERR, logFile, refresh);
       }
       gmail.users.messages.trash({
         userId: 'me',
         id: res.data.messages[0].id
       });
-    }
-  );
+    });
 }
 
 function getMail(msgId, auth, callback, logFile, refresh) {
@@ -219,7 +250,7 @@ function getMail(msgId, auth, callback, logFile, refresh) {
       }
     }
     else {
-      logForm(ERR_READ_MAIL, logFile, refresh);
+      logForm(errors.ERR_READ_MAIL, logFile, refresh);
     }
   });
 }
@@ -230,7 +261,7 @@ function handleBody(body, callback, logFile, refresh) {
     url = body.split('<span id="link-account">')[1].split('</span>')[0];
   }
   else {
-    logForm(ERR_MESSAGE_IN_MAIL, logFile, refresh);
+    logForm(errors.ERR_MESSAGE_IN_MAIL, logFile, refresh);
     return;
   }
   let site = {
@@ -243,9 +274,9 @@ function handleBody(body, callback, logFile, refresh) {
     .then((data) => {
       mailState = true;
       if (data[0].status !== 'fulfilled') logForm(ERR_SITE_PING, logFile, refresh);
-      else logForm(NO_ERR, logFile, refresh, refresh);
+      else logForm(errors.NO_ERR, logFile, refresh, refresh);
     })
     .catch((err) => {
-      logForm(ERR_LOGIN, logFile, refresh);
+      logForm(errors.ERR_SITE_CRASH, logFile, refresh);
     });
 }

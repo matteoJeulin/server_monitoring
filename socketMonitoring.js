@@ -1,12 +1,8 @@
-const io = require('socket.io-client');
-const fs = require('fs');
-const { exec } = require('child_process');
 
-const { writeErr } = require('./util/writeErr');
+const io = require('socket.io-client');
+
 const { alert, logValue } = require('./util/writeLog');
 const config = require('./config/config.json');
-const { getCurrDate } = require('./util/getCurrDate');
-const { BADHINTS } = require('dns');
 
 let sockets = config.sockets;
 let nbConnected = [];
@@ -15,8 +11,8 @@ let bash = [];
 
 function checkSocket() {
     for (let i = 0; i < sockets.length; i++) {
-        nbConnected[i] = 0;
         logValue({ pathToDir: config.defPath.directorySocket, fileName: sockets[i].name, valueMin: config.fileConfig.minSocket, valueMax: config.fileConfig.maxSocket, refreshRate: config.time.sockets.refresh / 1000, value: nbConnected[i] });
+        nbConnected[i] = 0;
     }
     if (errList.length > 0) {
         alert({ errList: errList, fileName: 'websocketLog', sendMail: true, bashToExecute: bash });
