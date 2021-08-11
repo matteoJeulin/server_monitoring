@@ -64,7 +64,7 @@ const SCOPES = ['https://www.googleapis.com/auth/gmail.modify'];
 // The file token.json stores the user's access and refresh tokens, and is
 // created automatically when the authorization flow completes for the first
 // time.
-const TOKEN_PATH = './config/token.json';
+const TOKEN_PATH = `${__dirname}/config/token.json`;
 
 const signUp = config.signUp;
 signUp.errState = 0;
@@ -90,7 +90,7 @@ function checkLogin() {
           return;
         }
       }
-      logForm(errors.ERR_LOGIN, login.logFile, config.time.log.refresh);
+      logForm(errors.ERR_LOGIN, login.logFile, config.time.login.refresh);
     })
     .catch((err) => {
       logForm(errors.ERR_RESPONSE, login.logFile, config.time.login.refresh);
@@ -110,7 +110,7 @@ function checkSignup() {
       setTimeout(() => {
         authorize(signUp, post.email, listMessages, true, signUp.logFile, config.time.signUp.refresh);
         exec(signUp.bashToExecute);
-      }, config.time.signUp.refresh);
+      }, config.time.signUp.timeout);
     })
     .catch((err) => {
       logForm(errors.ERR_CREATE, signUp.logFile, config.time.signUp.refresh);

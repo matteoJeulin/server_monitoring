@@ -83,4 +83,3 @@ for (let i = 0; i < sockets.length; i++) {
 }
 
 setInterval(checkSocket, config.time.sockets.refresh);
-checkSocket();

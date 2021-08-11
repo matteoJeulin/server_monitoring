@@ -39,7 +39,6 @@ for (let i = 0; i < IPlist.length; i++) {
             src: name
         });
         bash.push(IPlist[i].bash)
-        // alert({errList: [`${name} took too long to respond ( ͡° ʖ̯ ͡°)`], srcOfError: name, fileName: 'zmqLog', bashToExecute: IPlist[i].bash, sendMail: true});
     }, config.time.zmq.slowResp);
 
     zmqSock[i].on('message', () => {
@@ -51,10 +50,8 @@ for (let i = 0; i < IPlist.length; i++) {
                 src: name
             });
             bash.push(IPlist[i].bash)
-            // alert({errList: [`${name} took too long to respond ( ͡° ʖ̯ ͡°)`], srcOfError: name, fileName: 'zmqLog', bashToExecute: IPlist[i].bash, sendMail: true});
         }, config.time.zmq.slowResp);
     });
 }
 
 setInterval(checkZmq, config.time.zmq.refresh);
-checkZmq();

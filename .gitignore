@@ -1,7 +1,12 @@
 config/config.json
 config/token.json
 test/
-
+.idea/
+srcDatabase/databaseStatus
+srcServer/serverStatus
+srcSocket/socketStatus
+srcWebsite/siteStatus
+srcZmq/zmqStatus
 
 
 # Logs
